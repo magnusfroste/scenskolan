@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 
@@ -75,9 +76,9 @@ const ScriptDisplay = ({
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4 flex-1">
           <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
-          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1 ml-auto mr-4">
             <button
               onClick={() => onPracticeModeChange('full')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
