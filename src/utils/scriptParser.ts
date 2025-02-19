@@ -43,15 +43,16 @@ export const parseScript = (text: string): ParsedScript => {
     // If we're not in the ROLLER section, process regular script lines
     if (!isInRollerSection) {
       // Check for scene markers (supports both SCEN 4 and SCEN 4:1 formats)
-      const sceneMatch = line.match(/SCEN\s*(\d+(?::\d+)?)/i);
+      const sceneMatch = line.match(/^SCEN\s*(\d+(?::\d+)?)(.*)/i);
       if (sceneMatch) {
-        currentScene = sceneMatch[1];
+        const [_, sceneNumber, description] = sceneMatch;
+        currentScene = sceneNumber;
         scenesSet.add(currentScene);
         
-        // Store the entire line as the stage direction, preserving the scene description
+        // Store only the scene line itself, with its description
         lines.push({
           character: '',
-          text: line.trim(),
+          text: line.split('\n')[0].trim(), // Only take the first line
           isStageDirection: true,
           scene: currentScene
         });
@@ -90,8 +91,11 @@ export const parseScript = (text: string): ParsedScript => {
 
       // If it's just text and we have a previous line, assume it's continuation
       if (lines.length > 0 && !line.includes(':')) {
+        // Only append to non-scene lines
         const lastLine = lines[lines.length - 1];
-        lastLine.text += ' ' + line;
+        if (!lastLine.text.toUpperCase().startsWith('SCEN')) {
+          lastLine.text += ' ' + line;
+        }
       }
     }
   });
