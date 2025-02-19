@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 
 interface Character {
   name: string;
@@ -62,37 +62,40 @@ const ScriptDisplay = ({
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       {/* Controls */}
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-gray-600">{currentScene === 'all' ? 'All Scenes' : sceneName}</span>
-          <div className="flex items-center gap-0.5 bg-secondary rounded-lg p-0.5">
+          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1">
             <button
               onClick={() => onPracticeModeChange('full')}
-              className={`px-2 py-0.5 rounded-md text-xs transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                 practiceMode === 'full'
-                  ? 'bg-white shadow-sm text-gray-800'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-[#8B5CF6] text-white shadow-md scale-105'
+                  : 'bg-white text-gray-600 hover:text-gray-800 hover:bg-[#8B5CF6]/10'
               }`}
             >
+              <BookOpen size={18} />
               Full
             </button>
             <button
               onClick={() => onPracticeModeChange('cues')}
-              className={`px-2 py-0.5 rounded-md text-xs transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                 practiceMode === 'cues'
-                  ? 'bg-white shadow-sm text-gray-800'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-[#D946EF] text-white shadow-md scale-105'
+                  : 'bg-white text-gray-600 hover:text-gray-800 hover:bg-[#D946EF]/10'
               }`}
             >
+              <BookCopy size={18} />
               Cues
             </button>
             <button
               onClick={() => onPracticeModeChange('lines')}
-              className={`px-2 py-0.5 rounded-md text-xs transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                 practiceMode === 'lines'
-                  ? 'bg-white shadow-sm text-gray-800'
-                  : 'text-gray-600 hover:text-gray-800'
+                  ? 'bg-[#F97316] text-white shadow-md scale-105'
+                  : 'bg-white text-gray-600 hover:text-gray-800 hover:bg-[#F97316]/10'
               }`}
             >
+              <BookText size={18} />
               Lines
             </button>
           </div>
