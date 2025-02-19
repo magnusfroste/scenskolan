@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import { parseScript } from '@/utils/scriptParser';
@@ -15,14 +16,38 @@ const sampleScripts = [
     content: `SCENE 1
 Alice: Oh dear! Oh dear! I shall be late!
 White Rabbit: I'm late, I'm late, for a very important date!
-(Alice follows the White Rabbit)
-Alice: What a curious thing!
+(Alice follows the White Rabbit down the rabbit hole)
+Alice: What a curious thing! I seem to be falling!
+White Rabbit: No time to say hello, goodbye! I'm late, I'm late, I'm late!
 
 SCENE 2
 Mad Hatter: Would you like some tea?
 Alice: I suppose so... but I haven't been invited.
 March Hare: No room! No room!
-Alice: There's plenty of room!`
+Alice: There's plenty of room!
+Mad Hatter: Your hair wants cutting.
+Alice: You should learn not to make personal remarks. It's very rude.
+(The Dormouse falls asleep in his teacup)
+March Hare: Have some more tea!
+Alice: I haven't had any yet, so I can't take more.
+
+SCENE 3
+Queen of Hearts: Off with her head!
+Alice: Nonsense!
+(The cards begin to swirl around Alice)
+White Rabbit: Oh my ears and whiskers!
+Queen of Hearts: Are you ready now to play croquet?
+Alice: Yes, your majesty.
+(The flamingos and hedgehogs arrange themselves for the game)
+
+SCENE 4
+Cheshire Cat: We're all mad here.
+Alice: How do you know I'm mad?
+Cheshire Cat: You must be, or you wouldn't have come here.
+(The Cheshire Cat slowly disappears, leaving only its grin)
+Alice: Now I've seen a cat without a grin, but never a grin without a cat!
+Mad Hatter: (appearing suddenly) Why is a raven like a writing desk?
+Alice: I believe I can guess that riddle!`
   },
   {
     title: "Peter Pan",
@@ -31,28 +56,80 @@ Alice: There's plenty of room!`
 Peter Pan: All children grow up... except one.
 Wendy: Can you really fly?
 (Peter floats in the air)
-Peter Pan: Of course I can!
+Peter Pan: Of course I can! All it takes is faith, trust, and a little bit of pixie dust!
+John: I should like to fly very much.
+Michael: Me too!
+(Tinker Bell sprinkles fairy dust on the children)
 
 SCENE 2
 Captain Hook: Pan! Come out and fight like a man!
 Peter Pan: If you say so, Hook!
 Tinker Bell: *tinkles angrily*
-(Tinker Bell flies around sprinkling fairy dust)`
+(Tinker Bell flies around sprinkling fairy dust)
+Smee: Careful, Captain!
+Captain Hook: Smee! Don't just stand there!
+(The pirates gather on deck)
+
+SCENE 3
+Lost Boys: Welcome to Neverland!
+Wendy: What a wonderful place!
+(The children explore the magical forest)
+John: Look! Indians!
+Tiger Lily: Welcome, Flying Children.
+Michael: Can we stay here forever?
+Peter Pan: Of course! In Neverland, you never have to grow up!
+
+SCENE 4
+Captain Hook: At last! The hideout of Peter Pan!
+Smee: Shall I wake the crocodile, Captain?
+(The ticking clock sound grows louder)
+Captain Hook: That dreadful beast! Keep it away!
+Peter Pan: Ready for another adventure, Hook?
+Lost Boys: (all together) Fight! Fight! Fight!
+Wendy: Oh, be careful Peter!`
   },
   {
     title: "The Wizard of Oz",
     description: "The magical journey to the Emerald City",
     content: `SCENE 1
 Dorothy: Toto, I've a feeling we're not in Kansas anymore.
-Scarecrow: If I only had a brain...
 (Glinda appears in a bubble)
 Glinda: Are you a good witch, or a bad witch?
+Dorothy: I'm not a witch at all. I'm Dorothy Gale from Kansas.
+(Munchkins peek out from their hiding places)
+Munchkins: (singing) Follow the yellow brick road!
+Dorothy: Where does it lead?
+Glinda: To the Emerald City, where the Wizard lives.
 
 SCENE 2
-Dorothy: There's no place like home.
-Tin Man: If I only had a heart...
-Lion: If I only had the nerve...
-(The group walks down the yellow brick road)`
+Dorothy: What sort of creature are you?
+Scarecrow: I'm not really a creature at all. I'm a scarecrow, and I don't have a brain.
+Dorothy: How can you talk if you don't have a brain?
+Scarecrow: I don't know... but some people without brains do an awful lot of talking.
+(The Tin Man appears, completely rusted)
+Dorothy: Oh! A man made out of tin!
+Tin Man: Oil... can...
+
+SCENE 3
+Lion: Put 'em up, put 'em up! I'll fight you with one paw tied behind my back!
+Dorothy: You're nothing but a great big coward!
+Lion: You're right. I am a coward. I haven't any courage at all.
+Scarecrow: Perhaps the Wizard could help you too!
+Tin Man: To Oz?
+All Together: To Oz!
+
+SCENE 4
+Wizard: I am Oz, the Great and Terrible!
+Dorothy: Please, sir. I want to go home to Kansas.
+(The curtain is pulled back, revealing the real wizard)
+Scarecrow: You're not a real wizard at all!
+Wizard: I'm a good man, but I'm a very bad wizard.
+Lion: What about my courage?
+Wizard: You have plenty of courage. What you lack is confidence.
+(Glinda reappears)
+Glinda: You've always had the power to go back to Kansas.
+Dorothy: I have?
+Glinda: Just click your heels three times and say "There's no place like home."`
   }
 ];
 

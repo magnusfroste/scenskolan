@@ -134,7 +134,7 @@ const ScriptDisplay = ({
   }, [currentScene, selectedCharacter, practiceMode]);
 
   const handleScriptPaste = () => {
-    console.log('Pasted script:', scriptText);
+    console.log('Script pasted');
   };
 
   return (
