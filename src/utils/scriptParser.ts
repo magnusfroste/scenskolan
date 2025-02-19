@@ -47,10 +47,10 @@ export const parseScript = (text: string): ParsedScript => {
       if (sceneMatch) {
         currentScene = sceneMatch[1];
         scenesSet.add(currentScene);
-        // Add scene change as stage direction
+        // Add scene change as stage direction with full text
         lines.push({
           character: '',
-          text: `(Scene ${currentScene})`,
+          text: line,  // Use the full line text instead of just scene number
           isStageDirection: true,
           scene: currentScene
         });
