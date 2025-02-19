@@ -9,15 +9,9 @@ interface ScriptHeaderProps {
 const ScriptHeader = ({ onFileUpload }: ScriptHeaderProps) => {
   return (
     <header className="w-full border-b bg-white">
-      <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-700">Script Trainer</h1>
-          <p className="text-sm text-gray-500">Practice your lines</p>
-        </div>
-        
-        <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all cursor-pointer text-sm">
-          <Upload size={16} />
-          Upload
+      <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-end">
+        <label className="inline-flex items-center gap-1 px-2 py-1 text-gray-500 hover:text-gray-700 rounded-lg cursor-pointer text-sm">
+          <Upload size={14} />
           <input
             type="file"
             accept=".txt"
