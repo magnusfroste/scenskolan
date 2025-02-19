@@ -99,15 +99,14 @@ const Index = () => {
                   className="hidden"
                 />
               </label>
+              
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="lg" className="h-full gap-2 px-6">
+                  <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
                     <ClipboardPaste size={24} className="text-gray-500" />
-                    <div className="flex flex-col items-center">
-                      <span className="text-sm font-medium text-gray-600">Paste your script</span>
-                      <span className="text-xs text-gray-500">Click to open editor</span>
-                    </div>
-                  </Button>
+                    <span className="text-sm font-medium text-gray-600">Paste your script</span>
+                    <span className="text-xs text-gray-500">Click to open editor</span>
+                  </div>
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
