@@ -157,25 +157,64 @@ const ScriptDisplay = ({
     return Math.min(Math.max(baseOpacity * multiplier, 0), 1);
   };
 
-  const getHighlightStyle = (line: Line) => {
+  const getLineStyle = (line: Line) => {
     if (!shouldShowLine(line)) {
       const blurIntensity = Math.max(2, 8 - (contrastLevel / 20));
-      return `bg-secondary/30 blur-[${blurIntensity}px] hover:blur-none cursor-help`;
+      return {
+        backgroundColor: 'rgb(244, 244, 245)',
+        opacity: 0.3,
+        filter: `blur(${blurIntensity}px)`,
+      };
     }
     
     if (line.isStageDirection) {
       const opacity = Math.max(0.3, contrastLevel / 200);
-      return `bg-accent/30 italic text-gray-600 hover:bg-accent/${Math.min(50, opacity * 100)}`;
+      return {
+        backgroundColor: 'rgb(249, 250, 251)',
+        opacity: opacity,
+        fontStyle: 'italic',
+        color: 'rgb(75, 85, 99)',
+      };
     }
     
     if (selectedCharacter === line.character) {
-      const baseOpacity = Math.max(0.1, contrastLevel / 200);
-      return practiceMode === 'lines' 
-        ? `bg-[#9b87f5] bg-opacity-${Math.round(baseOpacity * 100)} hover:bg-opacity-${Math.round(Math.min(30, baseOpacity * 150))}`
-        : `bg-[#E5DEFF] hover:bg-[#D6BCFA] hover:bg-opacity-${Math.round(Math.min(100, baseOpacity * 150))}`;
+      const baseOpacity = Math.max(0.1, contrastLevel / 100);
+      if (practiceMode === 'lines') {
+        return {
+          backgroundColor: '#9b87f5',
+          opacity: baseOpacity,
+        };
+      } else {
+        return {
+          backgroundColor: '#E5DEFF',
+          opacity: baseOpacity,
+        };
+      }
     }
     
-    return 'bg-white hover:bg-gray-50';
+    return {
+      backgroundColor: 'white',
+    };
+  };
+
+  const getLineClassName = (line: Line) => {
+    let baseClasses = 'p-2 rounded-lg transition-all';
+    
+    if (!shouldShowLine(line)) {
+      baseClasses += ' hover:blur-none cursor-help';
+    } else if (line.isStageDirection) {
+      baseClasses += ' hover:bg-accent/70';
+    } else if (selectedCharacter === line.character) {
+      if (practiceMode === 'lines') {
+        baseClasses += ' hover:opacity-[0.8]';
+      } else {
+        baseClasses += ' hover:bg-[#D6BCFA] hover:opacity-[0.8]';
+      }
+    } else {
+      baseClasses += ' hover:bg-gray-50';
+    }
+    
+    return baseClasses;
   };
 
   return (
@@ -297,16 +336,19 @@ const ScriptDisplay = ({
           return (
             <div
               key={index}
-              className={`p-2 rounded-lg transition-all ${getHighlightStyle(line)} ${
+              className={`${getLineClassName(line)} ${
                 isCurrentLine ? 'ring-1 ring-[#9b87f5] ring-opacity-30' : ''
               }`}
+              style={getLineStyle(line)}
             >
               {!line.isStageDirection && (
                 <div className="font-medium text-xs text-gray-500 mb-0.5">
                   {line.character}:
                 </div>
               )}
-              <div className="text-gray-800 text-sm">{line.text}</div>
+              <div className={line.isStageDirection ? 'text-gray-600' : 'text-gray-800'} style={{ opacity: 1 }}>
+                {line.text}
+              </div>
             </div>
           );
         })}
