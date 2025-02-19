@@ -24,7 +24,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: Ap
   if (scenes.length <= 1) return null;
 
   return (
-    <Sidebar>
+    <Sidebar className="!w-48">
       <SidebarHeader className="border-b">
         <SidebarMenuButton
           onClick={onGoBack}
