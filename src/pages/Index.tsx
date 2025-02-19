@@ -1,14 +1,11 @@
-
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
-import ScriptHeader from '@/components/ScriptHeader';
 import { parseScript } from '@/utils/scriptParser';
 import type { Character, ScriptLine } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Upload } from 'lucide-react';
 
-// Sample data
 const sampleCharacters: Character[] = [
   { name: "Stella", actor: "Ellen H." },
   { name: "Bella", actor: "Esther" },
@@ -94,12 +91,12 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full">
-        <ScriptHeader onFileUpload={handleFileUpload} />
         <div className="flex flex-1">
           <AppSidebar
             scenes={scenes}
             currentScene={currentScene}
             onSceneChange={setCurrentScene}
+            onGoBack={() => setHasScript(false)}
           />
           <main className="flex-1 bg-gray-50">
             <div className="h-full max-w-5xl mx-auto px-2 py-4">
