@@ -157,6 +157,27 @@ const ScriptDisplay = ({
     return Math.min(Math.max(baseOpacity * multiplier, 0), 1);
   };
 
+  const getHighlightStyle = (line: Line) => {
+    if (!shouldShowLine(line)) {
+      const blurIntensity = Math.max(2, 8 - (contrastLevel / 20));
+      return `bg-secondary/30 blur-[${blurIntensity}px] hover:blur-none cursor-help`;
+    }
+    
+    if (line.isStageDirection) {
+      const opacity = Math.max(0.3, contrastLevel / 200);
+      return `bg-accent/30 italic text-gray-600 hover:bg-accent/${Math.min(50, opacity * 100)}`;
+    }
+    
+    if (selectedCharacter === line.character) {
+      const baseOpacity = Math.max(0.1, contrastLevel / 200);
+      return practiceMode === 'lines' 
+        ? `bg-[#9b87f5] bg-opacity-${Math.round(baseOpacity * 100)} hover:bg-opacity-${Math.round(Math.min(30, baseOpacity * 150))}`
+        : `bg-[#E5DEFF] hover:bg-[#D6BCFA] hover:bg-opacity-${Math.round(Math.min(100, baseOpacity * 150))}`;
+    }
+    
+    return 'bg-white hover:bg-gray-50';
+  };
+
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
@@ -170,7 +191,7 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('full')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                       practiceMode === 'full'
-                        ? 'bg-[#8B5CF6] text-white shadow-sm'
+                        ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -189,7 +210,7 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('cues')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                       practiceMode === 'cues'
-                        ? 'bg-[#D946EF] text-white shadow-sm'
+                        ? 'bg-[#7E69AB] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -208,7 +229,7 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('lines')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                       practiceMode === 'lines'
-                        ? 'bg-[#F97316] text-white shadow-sm'
+                        ? 'bg-[#6E59A5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -260,7 +281,7 @@ const ScriptDisplay = ({
             onClick={() => onSelectCharacter(char.name)}
             className={`px-2 py-0.5 rounded-full text-xs transition-all ${
               selectedCharacter === char.name
-                ? 'bg-primary text-white'
+                ? 'bg-[#9b87f5] text-white'
                 : 'bg-white hover:bg-gray-50'
             }`}
           >
@@ -272,25 +293,12 @@ const ScriptDisplay = ({
       <div className="space-y-2 p-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
         {lines.map((line, index) => {
           const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
-          const getHighlightStyle = () => {
-            if (!shouldShowLine(line)) {
-              return `bg-secondary/50 blur-sm hover:blur-none cursor-help`;
-            }
-            if (line.isStageDirection) {
-              return `bg-accent/50 italic text-gray-600 hover:bg-accent/70`;
-            }
-            if (selectedCharacter === line.character) {
-              const opacity = getOpacityValue(0.05);
-              return `bg-primary bg-opacity-[${opacity}] hover:bg-opacity-[${opacity * 2}]`;
-            }
-            return 'bg-white hover:bg-gray-50';
-          };
-
+          
           return (
             <div
               key={index}
-              className={`p-2 rounded-lg transition-all ${getHighlightStyle()} ${
-                isCurrentLine ? 'ring-1 ring-primary ring-opacity-30' : ''
+              className={`p-2 rounded-lg transition-all ${getHighlightStyle(line)} ${
+                isCurrentLine ? 'ring-1 ring-[#9b87f5] ring-opacity-30' : ''
               }`}
             >
               {!line.isStageDirection && (
