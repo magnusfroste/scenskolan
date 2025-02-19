@@ -5,7 +5,7 @@ import { parseScript } from '@/utils/scriptParser';
 import type { Character, ScriptLine } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { Upload, ClipboardPaste, Sparkles } from 'lucide-react';
+import { Upload, ClipboardPaste, Sparkles, HelpCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
@@ -218,6 +218,46 @@ const Index = () => {
           </p>
           <div className="flex flex-col items-center gap-8">
             <div className="flex gap-4">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
+                    <HelpCircle size={24} className="text-gray-500" />
+                    <span className="text-sm font-medium text-gray-600">Script Instructions</span>
+                    <span className="text-xs text-gray-500">Format guidelines</span>
+                  </div>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Script Format Instructions</SheetTitle>
+                    <SheetDescription>
+                      Your script should follow these formatting rules:
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-4 text-left">
+                    <ul className="list-disc pl-4 space-y-2">
+                      <li>Start each scene with "SCENE" followed by a number</li>
+                      <li>Write character names followed by a colon (e.g., "Alice: Hello there!")</li>
+                      <li>Use parentheses for stage directions (e.g., "(enters stage)")</li>
+                      <li>Separate scenes with blank lines</li>
+                      <li>Group related characters/roles at the start using "ROLLER" or "CAST"</li>
+                    </ul>
+                    <div className="mt-4 p-4 bg-gray-100 rounded-md">
+                      <p className="text-sm font-medium mb-2">Example:</p>
+                      <pre className="text-xs whitespace-pre-wrap">
+{`SCENE 1
+Alice: Oh dear! Oh dear! I shall be late!
+(Alice runs across the stage)
+White Rabbit: I'm late, I'm late!
+
+SCENE 2
+Mad Hatter: Would you like some tea?
+Alice: Yes, please.`}
+                      </pre>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
               <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
                 <Upload size={24} className="text-gray-500" />
                 <span className="text-sm font-medium text-gray-600">Upload your script</span>
