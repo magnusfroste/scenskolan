@@ -43,6 +43,19 @@ const ScriptDisplay = ({
   const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
   const visibleLinesRef = useRef<Line[]>([]);
 
+  // Get active characters for the current scene
+  const getActiveCharacters = () => {
+    if (currentScene === 'all') return characters;
+    
+    const activeCharacterNames = new Set(
+      lines
+        .filter(line => line.scene === currentScene && !line.isStageDirection)
+        .map(line => line.character)
+    );
+    
+    return characters.filter(char => activeCharacterNames.has(char.name));
+  };
+
   useEffect(() => {
     speechSynthesisRef.current = window.speechSynthesis;
     return () => {
@@ -187,7 +200,7 @@ const ScriptDisplay = ({
       </div>
 
       <div className="p-1.5 flex flex-wrap gap-1 border-b bg-gray-50">
-        {characters.map((char) => (
+        {getActiveCharacters().map((char) => (
           <button
             key={char.name}
             onClick={() => onSelectCharacter(char.name)}
