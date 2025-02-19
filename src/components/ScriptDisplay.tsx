@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 
@@ -55,7 +54,6 @@ const ScriptDisplay = ({
     return true;
   };
 
-  // Update the scene name formatting
   const getSceneName = () => {
     if (currentScene === 'all') return 'All Scenes';
     const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
@@ -63,19 +61,16 @@ const ScriptDisplay = ({
     const sceneMatch = sceneText.match(/SCEN\s*(\d+(?::\d+)?)/i);
     
     if (sceneMatch && sceneText.includes(':')) {
-      // If we have both scene number and description
       const [fullMatch, sceneNum] = sceneMatch;
       const description = sceneText.replace(fullMatch, '').trim();
-      return `Scene ${sceneNum}${description}`;
+      return `Scene ${sceneNum} ${description}`;
     } else {
-      // Fallback to just the scene number
       return `Scene ${currentScene}`;
     }
   };
 
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
-      {/* Controls */}
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
@@ -123,7 +118,6 @@ const ScriptDisplay = ({
         </button>
       </div>
 
-      {/* Character Selection */}
       <div className="p-1.5 flex flex-wrap gap-1 border-b bg-gray-50">
         {characters.map((char) => (
           <button
@@ -140,7 +134,6 @@ const ScriptDisplay = ({
         ))}
       </div>
 
-      {/* Script Lines */}
       <div className="space-y-2 p-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
         {lines.map((line, index) => (
           <div
