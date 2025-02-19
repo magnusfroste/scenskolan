@@ -212,9 +212,9 @@ const Index = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
         <div className="text-center max-w-2xl mx-auto space-y-6">
-          <h1 className="text-4xl font-bold text-gray-900">Script Trainer</h1>
+          <h1 className="text-4xl font-bold text-gray-900">PlayScript Spark</h1>
           <p className="text-xl text-gray-600">
-            Upload your script and practice your lines with our interactive reader.
+            Turn your scripts into magical performances! ✨ Perfect for young actors, drama clubs, and classroom plays.
           </p>
           <div className="flex flex-col items-center gap-8">
             <div className="flex gap-4">
