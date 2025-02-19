@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import ScriptHeader from '@/components/ScriptHeader';
-import SceneNavigation from '@/components/SceneNavigation';
 import { parseScript } from '@/utils/scriptParser';
 import type { Character, ScriptLine } from '@/types/script';
+import { AppSidebar } from '@/components/AppSidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 // Sample data
 const sampleCharacters: Character[] = [
@@ -24,7 +25,7 @@ const sampleLines: ScriptLine[] = [
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState<string>("1");
+  const [currentScene, setCurrentScene] = useState("1");
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
   const [characters, setCharacters] = useState(sampleCharacters);
   const [lines, setLines] = useState<ScriptLine[]>(sampleLines);
@@ -62,29 +63,32 @@ const Index = () => {
   const filteredLines = lines.filter(line => line.scene === currentScene);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
-      <div className="container mx-auto px-4">
-        <ScriptHeader onFileUpload={handleFileUpload} />
-
-        <ScriptDisplay
-          currentScene={currentScene}
-          characters={characters}
-          lines={filteredLines}
-          isPlaying={isPlaying}
-          onPlayPause={handlePlayPause}
-          selectedCharacter={selectedCharacter}
-          onSelectCharacter={handleCharacterSelect}
-          practiceMode={practiceMode}
-          onPracticeModeChange={handlePracticeModeChange}
-        />
-
-        <SceneNavigation
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar
           scenes={scenes}
           currentScene={currentScene}
           onSceneChange={setCurrentScene}
         />
+        <main className="flex-1 bg-gradient-to-b from-gray-50 to-gray-100 py-8">
+          <div className="container mx-auto px-4">
+            <ScriptHeader onFileUpload={handleFileUpload} />
+
+            <ScriptDisplay
+              currentScene={currentScene}
+              characters={characters}
+              lines={filteredLines}
+              isPlaying={isPlaying}
+              onPlayPause={handlePlayPause}
+              selectedCharacter={selectedCharacter}
+              onSelectCharacter={handleCharacterSelect}
+              practiceMode={practiceMode}
+              onPracticeModeChange={handlePracticeModeChange}
+            />
+          </div>
+        </main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
