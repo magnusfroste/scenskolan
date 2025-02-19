@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 
 interface Character {
@@ -37,6 +36,19 @@ const ScriptDisplay = ({
   practiceMode,
   onPracticeModeChange,
 }: ScriptDisplayProps) => {
+  const [currentLineIndex, setCurrentLineIndex] = useState(-1);
+  const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
+  const visibleLinesRef = useRef<Line[]>([]);
+
+  useEffect(() => {
+    speechSynthesisRef.current = window.speechSynthesis;
+    return () => {
+      if (speechSynthesisRef.current) {
+        speechSynthesisRef.current.cancel();
+      }
+    };
+  }, []);
+
   const shouldShowLine = (line: Line) => {
     if (practiceMode === 'full') return true;
     if (!selectedCharacter) return true;
@@ -72,6 +84,51 @@ const ScriptDisplay = ({
       return `Scene ${currentScene}`;
     }
   };
+
+  useEffect(() => {
+    visibleLinesRef.current = lines.filter(line => shouldShowLine(line));
+  }, [lines, selectedCharacter, practiceMode]);
+
+  useEffect(() => {
+    if (isPlaying && currentLineIndex < visibleLinesRef.current.length) {
+      const currentLine = visibleLinesRef.current[currentLineIndex];
+      if (currentLine) {
+        const textToSpeak = currentLine.isStageDirection 
+          ? "Stage direction: " + currentLine.text
+          : `${currentLine.character}: ${currentLine.text}`;
+
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.rate = 0.9; // Slightly slower rate for better clarity
+        utterance.onend = () => {
+          setCurrentLineIndex(prev => prev + 1);
+        };
+
+        speechSynthesisRef.current?.speak(utterance);
+      }
+    }
+
+    return () => {
+      speechSynthesisRef.current?.cancel();
+    };
+  }, [isPlaying, currentLineIndex]);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      speechSynthesisRef.current?.cancel();
+      onPlayPause();
+    } else {
+      setCurrentLineIndex(0); // Start from the beginning
+      onPlayPause();
+    }
+  };
+
+  useEffect(() => {
+    speechSynthesisRef.current?.cancel();
+    setCurrentLineIndex(-1);
+    if (isPlaying) {
+      onPlayPause();
+    }
+  }, [currentScene, selectedCharacter, practiceMode]);
 
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
@@ -115,7 +172,7 @@ const ScriptDisplay = ({
           </div>
         </div>
         <button
-          onClick={onPlayPause}
+          onClick={handlePlayPause}
           className="p-1.5 rounded-full bg-primary text-white hover:bg-opacity-90 transition-all"
         >
           {isPlaying ? <Pause size={16} /> : <Play size={16} />}
@@ -139,27 +196,30 @@ const ScriptDisplay = ({
       </div>
 
       <div className="space-y-2 p-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
-        {lines.map((line, index) => (
-          <div
-            key={index}
-            className={`p-2 rounded-lg transition-all ${
-              !shouldShowLine(line)
-                ? 'bg-secondary/50 blur-sm hover:blur-none cursor-help'
-                : line.isStageDirection
-                ? 'bg-accent italic text-gray-600'
-                : selectedCharacter === line.character
-                ? 'bg-primary/5 border border-primary/20'
-                : 'bg-white border border-gray-100'
-            }`}
-          >
-            {!line.isStageDirection && (
-              <div className="font-medium text-xs text-gray-500 mb-0.5">
-                {line.character}:
-              </div>
-            )}
-            <div className="text-gray-800 text-sm">{line.text}</div>
-          </div>
-        ))}
+        {lines.map((line, index) => {
+          const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
+          return (
+            <div
+              key={index}
+              className={`p-2 rounded-lg transition-all ${
+                !shouldShowLine(line)
+                  ? 'bg-secondary/50 blur-sm hover:blur-none cursor-help'
+                  : line.isStageDirection
+                  ? 'bg-accent italic text-gray-600'
+                  : selectedCharacter === line.character
+                  ? 'bg-primary/5 border border-primary/20'
+                  : 'bg-white border border-gray-100'
+              } ${isCurrentLine ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+            >
+              {!line.isStageDirection && (
+                <div className="font-medium text-xs text-gray-500 mb-0.5">
+                  {line.character}:
+                </div>
+              )}
+              <div className="text-gray-800 text-sm">{line.text}</div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
