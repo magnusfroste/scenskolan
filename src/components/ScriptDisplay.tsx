@@ -55,15 +55,30 @@ const ScriptDisplay = ({
     return true;
   };
 
-  const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
-  const sceneName = firstSceneLine ? firstSceneLine.text : `Scene ${currentScene}`;
+  // Update the scene name formatting
+  const getSceneName = () => {
+    if (currentScene === 'all') return 'All Scenes';
+    const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
+    const sceneText = firstSceneLine?.text || '';
+    const sceneMatch = sceneText.match(/SCEN\s*(\d+(?::\d+)?)/i);
+    
+    if (sceneMatch && sceneText.includes(':')) {
+      // If we have both scene number and description
+      const [fullMatch, sceneNum] = sceneMatch;
+      const description = sceneText.replace(fullMatch, '').trim();
+      return `Scene ${sceneNum}${description}`;
+    } else {
+      // Fallback to just the scene number
+      return `Scene ${currentScene}`;
+    }
+  };
 
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       {/* Controls */}
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-gray-600">{currentScene === 'all' ? 'All Scenes' : sceneName}</span>
+          <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
           <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1">
             <button
               onClick={() => onPracticeModeChange('full')}
