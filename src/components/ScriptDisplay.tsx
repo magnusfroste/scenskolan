@@ -56,62 +56,62 @@ const ScriptDisplay = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm animate-fade-in">
+    <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       {/* Controls */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Scene {currentScene}</h2>
-          <div className="flex items-center gap-2 bg-secondary rounded-lg p-1">
+      <div className="sticky top-0 z-10 flex items-center justify-between p-3 bg-white border-b">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-600">Scene {currentScene}</span>
+          <div className="flex items-center gap-1 bg-secondary rounded-lg p-0.5">
             <button
               onClick={() => onPracticeModeChange('full')}
-              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+              className={`px-2 py-1 rounded-md text-xs transition-all ${
                 practiceMode === 'full'
                   ? 'bg-white shadow-sm text-gray-800'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Full Script
+              Full
             </button>
             <button
               onClick={() => onPracticeModeChange('cues')}
-              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+              className={`px-2 py-1 rounded-md text-xs transition-all ${
                 practiceMode === 'cues'
                   ? 'bg-white shadow-sm text-gray-800'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              Cues Only
+              Cues
             </button>
             <button
               onClick={() => onPracticeModeChange('lines')}
-              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+              className={`px-2 py-1 rounded-md text-xs transition-all ${
                 practiceMode === 'lines'
                   ? 'bg-white shadow-sm text-gray-800'
                   : 'text-gray-600 hover:text-gray-800'
               }`}
             >
-              My Lines
+              Lines
             </button>
           </div>
         </div>
         <button
           onClick={onPlayPause}
-          className="p-3 rounded-full bg-primary text-white hover:bg-opacity-90 transition-all"
+          className="p-2 rounded-full bg-primary text-white hover:bg-opacity-90 transition-all"
         >
-          {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+          {isPlaying ? <Pause size={20} /> : <Play size={20} />}
         </button>
       </div>
 
       {/* Character Selection */}
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="p-2 flex flex-wrap gap-1 border-b bg-gray-50">
         {characters.map((char) => (
           <button
             key={char.name}
             onClick={() => onSelectCharacter(char.name)}
-            className={`px-4 py-2 rounded-full text-sm transition-all ${
+            className={`px-3 py-1 rounded-full text-xs transition-all ${
               selectedCharacter === char.name
                 ? 'bg-primary text-white'
-                : 'bg-secondary hover:bg-gray-200'
+                : 'bg-white border border-gray-200 hover:bg-gray-100'
             }`}
           >
             {char.name}
@@ -120,11 +120,11 @@ const ScriptDisplay = ({
       </div>
 
       {/* Script Lines */}
-      <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+      <div className="space-y-3 p-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
         {lines.map((line, index) => (
           <div
             key={index}
-            className={`p-4 rounded-lg transition-all ${
+            className={`p-3 rounded-lg transition-all ${
               !shouldShowLine(line)
                 ? 'bg-secondary/50 blur-sm hover:blur-none cursor-help'
                 : line.isStageDirection
@@ -135,7 +135,7 @@ const ScriptDisplay = ({
             }`}
           >
             {!line.isStageDirection && (
-              <div className="font-semibold text-sm text-gray-600 mb-1">
+              <div className="font-medium text-xs text-gray-500 mb-1">
                 {line.character}:
               </div>
             )}
