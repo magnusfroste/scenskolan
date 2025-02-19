@@ -161,8 +161,7 @@ const ScriptDisplay = ({
     if (!shouldShowLine(line)) {
       const blurIntensity = Math.max(2, 8 - (contrastLevel / 20));
       return {
-        backgroundColor: 'rgb(244, 244, 245)',
-        opacity: 0.3,
+        backgroundColor: `rgba(244, 244, 245, 0.3)`,
         filter: `blur(${blurIntensity}px)`,
       };
     }
@@ -170,10 +169,8 @@ const ScriptDisplay = ({
     if (line.isStageDirection) {
       const opacity = Math.max(0.3, contrastLevel / 200);
       return {
-        backgroundColor: 'rgb(249, 250, 251)',
-        opacity: opacity,
+        backgroundColor: `rgba(249, 250, 251, ${opacity})`,
         fontStyle: 'italic',
-        color: 'rgb(75, 85, 99)',
       };
     }
     
@@ -181,13 +178,11 @@ const ScriptDisplay = ({
       const baseOpacity = Math.max(0.1, contrastLevel / 100);
       if (practiceMode === 'lines') {
         return {
-          backgroundColor: '#9b87f5',
-          opacity: baseOpacity,
+          backgroundColor: `rgba(155, 135, 245, ${baseOpacity})`,
         };
       } else {
         return {
-          backgroundColor: '#E5DEFF',
-          opacity: baseOpacity,
+          backgroundColor: `rgba(229, 222, 255, ${baseOpacity})`,
         };
       }
     }
@@ -342,11 +337,11 @@ const ScriptDisplay = ({
               style={getLineStyle(line)}
             >
               {!line.isStageDirection && (
-                <div className="font-medium text-xs text-gray-500 mb-0.5">
+                <div className="font-medium text-xs text-gray-900 mb-0.5">
                   {line.character}:
                 </div>
               )}
-              <div className={line.isStageDirection ? 'text-gray-600' : 'text-gray-800'} style={{ opacity: 1 }}>
+              <div className="text-gray-900">
                 {line.text}
               </div>
             </div>
