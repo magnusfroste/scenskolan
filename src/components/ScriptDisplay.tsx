@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Play, Pause, BookOpen, BookCopy, BookText, ClipboardPaste } from 'lucide-react';
+import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,6 @@ const ScriptDisplay = ({
   practiceMode,
   onPracticeModeChange,
 }: ScriptDisplayProps) => {
-  const [scriptText, setScriptText] = useState('');
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
   const visibleLinesRef = useRef<Line[]>([]);
@@ -143,33 +142,6 @@ const ScriptDisplay = ({
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
         <div className="flex items-center gap-4 flex-1">
           <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <ClipboardPaste size={16} />
-                Paste Script
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Paste Your Script</SheetTitle>
-                <SheetDescription>
-                  Paste your script text here. Make sure it follows the correct format.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-6 space-y-4">
-                <textarea
-                  value={scriptText}
-                  onChange={(e) => setScriptText(e.target.value)}
-                  className="w-full h-[300px] p-4 border rounded-md"
-                  placeholder="Paste your script here..."
-                />
-                <Button onClick={handleScriptPaste} className="w-full">
-                  Process Script
-                </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
           <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1 ml-auto mr-4">
             <button
               onClick={() => onPracticeModeChange('full')}

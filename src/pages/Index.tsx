@@ -4,7 +4,9 @@ import { parseScript } from '@/utils/scriptParser';
 import type { Character, ScriptLine } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { Upload } from 'lucide-react';
+import { Upload, ClipboardPaste } from 'lucide-react';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const sampleCharacters: Character[] = [
   { name: "Stella", actor: "Ellen H." },
@@ -29,6 +31,7 @@ const Index = () => {
   const [lines, setLines] = useState<ScriptLine[]>([]);
   const [scenes, setScenes] = useState<string[]>([]);
   const [hasScript, setHasScript] = useState(false);
+  const [scriptText, setScriptText] = useState('');
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -60,6 +63,19 @@ const Index = () => {
     reader.readAsText(file);
   };
 
+  const handleScriptPaste = () => {
+    if (!scriptText.trim()) return;
+    
+    const parsed = parseScript(scriptText);
+    setCharacters(parsed.characters);
+    setLines(parsed.lines);
+    setScenes(parsed.scenes);
+    setCurrentScene(null);
+    setSelectedCharacter(null);
+    setHasScript(true);
+    setScriptText('');
+  };
+
   const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
 
   if (!hasScript) {
@@ -71,17 +87,49 @@ const Index = () => {
             Upload your script and practice your lines with our interactive reader.
           </p>
           <div className="flex flex-col items-center gap-4">
-            <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
-              <Upload size={24} className="text-gray-500" />
-              <span className="text-sm font-medium text-gray-600">Upload your script</span>
-              <span className="text-xs text-gray-500">Drag and drop or click to select</span>
-              <input
-                type="file"
-                accept=".txt"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-            </label>
+            <div className="flex gap-4">
+              <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
+                <Upload size={24} className="text-gray-500" />
+                <span className="text-sm font-medium text-gray-600">Upload your script</span>
+                <span className="text-xs text-gray-500">Drag and drop or click to select</span>
+                <input
+                  type="file"
+                  accept=".txt"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="lg" className="h-full gap-2 px-6">
+                    <ClipboardPaste size={24} className="text-gray-500" />
+                    <div className="flex flex-col items-center">
+                      <span className="text-sm font-medium text-gray-600">Paste your script</span>
+                      <span className="text-xs text-gray-500">Click to open editor</span>
+                    </div>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Paste Your Script</SheetTitle>
+                    <SheetDescription>
+                      Paste your script text here. Make sure it follows the correct format.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-4">
+                    <textarea
+                      value={scriptText}
+                      onChange={(e) => setScriptText(e.target.value)}
+                      className="w-full h-[300px] p-4 border rounded-md"
+                      placeholder="Paste your script here..."
+                    />
+                    <Button onClick={handleScriptPaste} className="w-full">
+                      Process Script
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
