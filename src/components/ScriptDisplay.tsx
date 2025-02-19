@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Pause } from 'lucide-react';
 
@@ -10,6 +11,7 @@ interface Line {
   character: string;
   text: string;
   isStageDirection?: boolean;
+  scene: string;
 }
 
 interface ScriptDisplayProps {
