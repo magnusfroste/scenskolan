@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import { parseScript } from '@/utils/scriptParser';
@@ -214,15 +215,21 @@ Bella: Åh herregud, hon är död! Min fantastiska syster är död!`
 
 const IndexPage: React.FC = () => {
   const [script, setScript] = useState<string>('');
-  const [parsedScript, setParsedScript] = useState<ScriptLine[]>([]);
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [parsedScript, setParsedScript] = useState<{ lines: ScriptLine[]; characters: Character[]; scenes: string[] }>({
+    lines: [],
+    characters: [],
+    scenes: []
+  });
   const [selectedSample, setSelectedSample] = useState<string>('');
+  const [currentScene, setCurrentScene] = useState<string>('all');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+  const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
 
   const handleParse = () => {
     try {
-      const { scriptLines, characters: extractedCharacters } = parseScript(script);
-      setParsedScript(scriptLines);
-      setCharacters(extractedCharacters);
+      const parsed = parseScript(script);
+      setParsedScript(parsed);
     } catch (error) {
       console.error("Error parsing script:", error);
       alert("Failed to parse script. Please check the script format.");
@@ -261,11 +268,26 @@ const IndexPage: React.FC = () => {
     }
   };
 
+  const handleSceneChange = (scene: string) => {
+    setCurrentScene(scene);
+  };
+
+  const handleGoBack = () => {
+    // Reset state when going back
+    setParsedScript({ lines: [], characters: [], scenes: [] });
+    setScript('');
+    setSelectedSample('');
+  };
+
   return (
     <SidebarProvider>
       <div className="flex h-screen bg-gray-100 text-gray-700">
-
-        <AppSidebar />
+        <AppSidebar 
+          scenes={parsedScript.scenes}
+          currentScene={currentScene}
+          onSceneChange={handleSceneChange}
+          onGoBack={handleGoBack}
+        />
 
         <main className="flex-1 p-4">
           <div className="mb-4 flex justify-between items-center">
@@ -309,8 +331,10 @@ const IndexPage: React.FC = () => {
                 </Button>
                 <label htmlFor="upload-script">
                   <Button variant="ghost" size="sm" asChild>
-                    <Upload className="h-4 w-4 mr-2" />
-                    <span>Upload Script</span>
+                    <span>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Script
+                    </span>
                   </Button>
                 </label>
                 <input
@@ -336,7 +360,17 @@ const IndexPage: React.FC = () => {
             </div>
 
             <div>
-              <ScriptDisplay scriptLines={parsedScript} characters={characters} />
+              <ScriptDisplay 
+                currentScene={currentScene}
+                characters={parsedScript.characters}
+                lines={parsedScript.lines}
+                isPlaying={isPlaying}
+                onPlayPause={() => setIsPlaying(!isPlaying)}
+                selectedCharacter={selectedCharacter}
+                onSelectCharacter={setSelectedCharacter}
+                practiceMode={practiceMode}
+                onPracticeModeChange={setPracticeMode}
+              />
             </div>
           </div>
         </main>
