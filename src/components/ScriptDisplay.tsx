@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Eye, EyeOff } from 'lucide-react';
 
 interface Character {
   name: string;
@@ -21,6 +21,8 @@ interface ScriptDisplayProps {
   onPlayPause: () => void;
   selectedCharacter: string | null;
   onSelectCharacter: (character: string) => void;
+  practiceMode: 'full' | 'cues' | 'lines';
+  onPracticeModeChange: (mode: 'full' | 'cues' | 'lines') => void;
 }
 
 const ScriptDisplay = ({
@@ -31,12 +33,67 @@ const ScriptDisplay = ({
   onPlayPause,
   selectedCharacter,
   onSelectCharacter,
+  practiceMode,
+  onPracticeModeChange,
 }: ScriptDisplayProps) => {
+  const shouldShowLine = (line: Line) => {
+    if (practiceMode === 'full') return true;
+    if (!selectedCharacter) return true;
+    if (line.isStageDirection) return true;
+    
+    if (practiceMode === 'lines') {
+      return line.character === selectedCharacter;
+    }
+    
+    if (practiceMode === 'cues') {
+      // Show the line before the selected character's line
+      const lineIndex = lines.indexOf(line);
+      const nextLine = lines[lineIndex + 1];
+      return nextLine?.character === selectedCharacter || line.character === selectedCharacter;
+    }
+    
+    return true;
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm animate-fade-in">
       {/* Controls */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Scene {currentScene}</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Scene {currentScene}</h2>
+          <div className="flex items-center gap-2 bg-secondary rounded-lg p-1">
+            <button
+              onClick={() => onPracticeModeChange('full')}
+              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+                practiceMode === 'full'
+                  ? 'bg-white shadow-sm text-gray-800'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Full Script
+            </button>
+            <button
+              onClick={() => onPracticeModeChange('cues')}
+              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+                practiceMode === 'cues'
+                  ? 'bg-white shadow-sm text-gray-800'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Cues Only
+            </button>
+            <button
+              onClick={() => onPracticeModeChange('lines')}
+              className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+                practiceMode === 'lines'
+                  ? 'bg-white shadow-sm text-gray-800'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              My Lines
+            </button>
+          </div>
+        </div>
         <button
           onClick={onPlayPause}
           className="p-3 rounded-full bg-primary text-white hover:bg-opacity-90 transition-all"
@@ -68,7 +125,9 @@ const ScriptDisplay = ({
           <div
             key={index}
             className={`p-4 rounded-lg transition-all ${
-              line.isStageDirection
+              !shouldShowLine(line)
+                ? 'bg-secondary/50 blur-sm hover:blur-none cursor-help'
+                : line.isStageDirection
                 ? 'bg-accent italic text-gray-600'
                 : selectedCharacter === line.character
                 ? 'bg-primary/5 border border-primary/20'

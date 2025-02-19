@@ -21,6 +21,7 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [currentScene, setCurrentScene] = useState(1);
+  const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -28,6 +29,10 @@ const Index = () => {
 
   const handleCharacterSelect = (character: string) => {
     setSelectedCharacter(character === selectedCharacter ? null : character);
+  };
+
+  const handlePracticeModeChange = (mode: 'full' | 'cues' | 'lines') => {
+    setPracticeMode(mode);
   };
 
   return (
@@ -46,6 +51,8 @@ const Index = () => {
           onPlayPause={handlePlayPause}
           selectedCharacter={selectedCharacter}
           onSelectCharacter={handleCharacterSelect}
+          practiceMode={practiceMode}
+          onPracticeModeChange={handlePracticeModeChange}
         />
       </div>
     </div>
