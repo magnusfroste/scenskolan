@@ -60,10 +60,13 @@ const ScriptDisplay = ({
     const sceneText = firstSceneLine?.text || '';
     const sceneMatch = sceneText.match(/SCEN\s*(\d+(?::\d+)?)/i);
     
-    if (sceneMatch && sceneText.includes(':')) {
+    if (sceneMatch) {
       const [fullMatch, sceneNum] = sceneMatch;
-      const description = sceneText.replace(fullMatch, '').trim();
-      return `Scene ${sceneNum} ${description}`;
+      let description = sceneText.replace(fullMatch, '').trim();
+      
+      description = description.replace(/^[–-]\s*/, '');
+      
+      return description ? `Scene ${sceneNum} ${description}` : `Scene ${sceneNum}`;
     } else {
       return `Scene ${currentScene}`;
     }

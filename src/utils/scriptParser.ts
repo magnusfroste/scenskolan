@@ -47,10 +47,11 @@ export const parseScript = (text: string): ParsedScript => {
       if (sceneMatch) {
         currentScene = sceneMatch[1];
         scenesSet.add(currentScene);
-        // Add scene change as stage direction with full text
+        
+        // Store the entire line as the stage direction, preserving the scene description
         lines.push({
           character: '',
-          text: line,  // Use the full line text instead of just scene number
+          text: line.trim(),
           isStageDirection: true,
           scene: currentScene
         });
@@ -95,10 +96,10 @@ export const parseScript = (text: string): ParsedScript => {
     }
   });
 
-  // Convert characters to the required format (with empty actor field)
+  // Convert characters to the required format
   const charactersList = Array.from(characters).map(char => ({
     name: char,
-    actor: '', // We don't track actor names anymore
+    actor: '',
   }));
 
   // Convert scenes set to sorted array
