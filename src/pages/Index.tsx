@@ -234,6 +234,13 @@ const Index = () => {
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4 text-left">
+                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                      <h3 className="text-sm font-semibold text-blue-800 mb-1">Importing Your Script</h3>
+                      <p className="text-sm text-blue-700">
+                        - File uploads currently support .txt files only<br />
+                        - You can also easily copy and paste your script text directly
+                      </p>
+                    </div>
                     <ul className="list-disc pl-4 space-y-2">
                       <li>Start each scene with "SCENE" followed by a number</li>
                       <li>Write character names followed by a colon (e.g., "Alice: Hello there!")</li>
