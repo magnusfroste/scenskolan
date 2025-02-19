@@ -120,6 +120,15 @@ const Index = () => {
     setScriptText('');
   };
 
+  const handleGoBack = () => {
+    setHasScript(false);
+    setCurrentScene(null);
+    setSelectedCharacter(null);
+    setCharacters([]);
+    setLines([]);
+    setScenes([]);
+  };
+
   const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
 
   if (!hasScript) {
@@ -206,7 +215,7 @@ const Index = () => {
             scenes={scenes}
             currentScene={currentScene}
             onSceneChange={setCurrentScene}
-            onGoBack={() => setHasScript(false)}
+            onGoBack={handleGoBack}
           />
           <main className="flex-1 bg-gray-50">
             <div className="h-full max-w-5xl mx-auto px-2 py-4">

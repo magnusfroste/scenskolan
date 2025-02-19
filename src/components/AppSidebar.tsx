@@ -21,8 +21,6 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: AppSidebarProps) {
-  if (scenes.length <= 1) return null;
-
   return (
     <Sidebar className="!w-48">
       <SidebarHeader className="border-b">
