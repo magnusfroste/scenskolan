@@ -130,253 +130,189 @@ Wizard: You have plenty of courage. What you lack is confidence.
 Glinda: You've always had the power to go back to Kansas.
 Dorothy: I have?
 Glinda: Just click your heels three times and say "There's no place like home."`
-  },
-  {
-    title: "Murder Behind the Scenes",
-    description: "A theatrical mystery with a twist",
-    content: `ROLLER
-Stella – Ellen H.
-Bella – Esther
-Leila – Ainhoa
-Bianca – Sophia
-Tim – John
-Tea – Mia
-Amalia – Eleanor
-Titti – Andrea
-Flora – Nadja
-Konstapel Knep – Ellen D.
-Konstapel Knåp – Melissa
-
-SCENE 1
-(Ljuset upp, skådespelarna står i statyer tills Flora kommer in)
-
-Flora: Titti, Titti, Titti…. Är du redo med manuset
-
-Titti (som sitter på sin plats): Ja, såklart
-
-Leila/Tybalt: Två starka släkter fläckar med sin splittring. Det ljuva Verona där vi spelar
-
-Tea/Vakt: En gammal fejd slår upp i ny förbittring. Som stadens endräkt åter sönderdelar.
-
-Bianca/Amman: Ett kärlekspar som kalla stjärnor skiljer. Tar sina liv till följd av fiendskapen
-
-Tim/Romeo: Först sörjande kan deras två familjer. Med sina barn begrava sina vapen
-
-Alla: Och har vi missat något av det hela. Så får ni resten när ni ser oss spela
-
-Flora: Bra början, nu kör vi balkongscenen.
-
-Alla gör sig redo, Tim/Romeo vid balkongen.
-
-Tea: Så fort Romeo finner kärleken i Julias blick. Skyndar han efter henne till hennes balkong
-
-Allt stannar upp, alla väntar på Stella. Tim som spelar Romeo står redo vid Julias balkong. Det blir tyst en stund, lite för länge...
-
-Flora: Stella, du kan komma in nu!
-
-Bianca: (kommer fram från kulissen) Hon är inte här. Som vanligt! Men jag kan ta hennes roll så länge.
-
-Bella (sitter eller står vid sidan av scenen): Min syster kommer när hon är redo, det behövs faktiskt en del föreberedelse när man är huvudrollen.
-
-Alla börjar prata med varandra om hur typiskt det är att Stella inte är där. De pratar i munnen på varandra så man hör inte vad de säger.
-
-Flora: Tysta nu allihop! Vad är min stjärna. Titti, spring efter och leta efter Stella, så väntar vi så länge.
-
-Alla: VÄNTA?! Tittar irriterat på varandra
-
-Stella (kommer in): Åh! Var i min loge och tittade mig i spegeln. Men nu är jag här.
-
-Alla stannar upp, kollar på Stella som kollar på alla.
-
-Bella (stolt): Nu är hon här!
-
-Stella: Så! Ska vi börja då, nu när jag är här.
-
-Flora: (Vänd mot Stella) Nämen vad bra att du kom nu. Då repeterar vi
-balkongscenen.
-
-Plötsligt försvinner ljuset och allt blir svart.
-
-Alla skriker: Amalia!!!! Tänd ljuset.
-
-Amalia: Det är inte jag som har gjort nåt. Jag har inte rört en spak.
-
-Plötsligt tänds det och man ser Stella Stjärnskott ligga på
-golvet.
-
-Bianca: Lägg av nu, res på dig, sluta fåna dig. Föreställningen måste ju fortsätta. Publiken
-väntar.
-
-Bella fram till Stella och känner på pulsen
-
-Bella: Åh herregud, hon är död! Min fantastiska syster är död!`
   }
 ];
 
-const IndexPage: React.FC = () => {
-  const [script, setScript] = useState<string>('');
-  const [parsedScript, setParsedScript] = useState<{ lines: ScriptLine[]; characters: Character[]; scenes: string[] }>({
-    lines: [],
-    characters: [],
-    scenes: []
-  });
-  const [selectedSample, setSelectedSample] = useState<string>('');
-  const [currentScene, setCurrentScene] = useState<string>('all');
+const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+  const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [lines, setLines] = useState<ScriptLine[]>([]);
+  const [scenes, setScenes] = useState<string[]>([]);
+  const [hasScript, setHasScript] = useState(false);
+  const [scriptText, setScriptText] = useState('');
 
-  const handleParse = () => {
-    try {
-      const parsed = parseScript(script);
-      setParsedScript(parsed);
-    } catch (error) {
-      console.error("Error parsing script:", error);
-      alert("Failed to parse script. Please check the script format.");
-    }
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
   };
 
-  const handleScriptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setScript(e.target.value);
+  const handleCharacterSelect = (character: string) => {
+    setSelectedCharacter(character === selectedCharacter ? null : character);
   };
 
-  const handleSampleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSample(e.target.value);
-    const selectedScript = sampleScripts.find(s => s.title === e.target.value)?.content || '';
-    setScript(selectedScript);
+  const handlePracticeModeChange = (mode: 'full' | 'cues' | 'lines') => {
+    setPracticeMode(mode);
   };
 
-  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSampleScript = (script: typeof sampleScripts[0]) => {
+    const parsed = parseScript(script.content);
+    setCharacters(parsed.characters);
+    setLines(parsed.lines);
+    setScenes(parsed.scenes);
+    setCurrentScene(null);
+    setSelectedCharacter(null);
+    setHasScript(true);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result as string;
-        setScript(content);
-      };
-      reader.readAsText(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const parsed = parseScript(text);
+      setCharacters(parsed.characters);
+      setLines(parsed.lines);
+      setScenes(parsed.scenes);
+      setCurrentScene(null);
+      setSelectedCharacter(null);
+      setHasScript(true);
+    };
+    reader.readAsText(file);
   };
 
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      setScript(text);
-    } catch (err) {
-      console.error("Failed to read clipboard contents: ", err);
-      alert("Failed to read from clipboard. Please ensure you have clipboard access enabled.");
-    }
-  };
-
-  const handleSceneChange = (scene: string) => {
-    setCurrentScene(scene);
+  const handleScriptPaste = () => {
+    if (!scriptText.trim()) return;
+    
+    const parsed = parseScript(scriptText);
+    setCharacters(parsed.characters);
+    setLines(parsed.lines);
+    setScenes(parsed.scenes);
+    setCurrentScene(null);
+    setSelectedCharacter(null);
+    setHasScript(true);
+    setScriptText('');
   };
 
   const handleGoBack = () => {
-    // Reset state when going back
-    setParsedScript({ lines: [], characters: [], scenes: [] });
-    setScript('');
-    setSelectedSample('');
+    setHasScript(false);
+    setCurrentScene(null);
+    setSelectedCharacter(null);
+    setCharacters([]);
+    setLines([]);
+    setScenes([]);
   };
+
+  const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
+
+  if (!hasScript) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+        <div className="text-center max-w-2xl mx-auto space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900">Script Trainer</h1>
+          <p className="text-xl text-gray-600">
+            Upload your script and practice your lines with our interactive reader.
+          </p>
+          <div className="flex flex-col items-center gap-8">
+            <div className="flex gap-4">
+              <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
+                <Upload size={24} className="text-gray-500" />
+                <span className="text-sm font-medium text-gray-600">Upload your script</span>
+                <span className="text-xs text-gray-500">Drag and drop or click to select</span>
+                <input
+                  type="file"
+                  accept=".txt"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+              
+              <Sheet>
+                <SheetTrigger asChild>
+                  <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
+                    <ClipboardPaste size={24} className="text-gray-500" />
+                    <span className="text-sm font-medium text-gray-600">Paste your script</span>
+                    <span className="text-xs text-gray-500">Click to open editor</span>
+                  </div>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Paste Your Script</SheetTitle>
+                    <SheetDescription>
+                      Paste your script text here. Make sure it follows the correct format.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-6 space-y-4">
+                    <textarea
+                      value={scriptText}
+                      onChange={(e) => setScriptText(e.target.value)}
+                      className="w-full h-[300px] p-4 border rounded-md"
+                      placeholder="Paste your script here..."
+                    />
+                    <Button onClick={handleScriptPaste} className="w-full">
+                      Process Script
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            <div className="w-full">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles size={20} className="text-purple-500" />
+                <h2 className="text-lg font-semibold text-gray-900">Try a sample script</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {sampleScripts.map((script, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSampleScript(script)}
+                    className="text-left p-4 bg-white border rounded-lg hover:border-purple-500 transition-all group"
+                  >
+                    <h3 className="font-semibold text-gray-900 group-hover:text-purple-600">{script.title}</h3>
+                    <p className="text-sm text-gray-600 mt-1">{script.description}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen bg-gray-100 text-gray-700">
-        <AppSidebar 
-          scenes={parsedScript.scenes}
-          currentScene={currentScene}
-          onSceneChange={handleSceneChange}
-          onGoBack={handleGoBack}
-        />
-
-        <main className="flex-1 p-4">
-          <div className="mb-4 flex justify-between items-center">
-            <h1 className="text-2xl font-semibold">Script Interface</h1>
-
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  <span>Example Scripts</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="sm:max-w-md">
-                <SheetHeader>
-                  <SheetTitle>Load Example Script</SheetTitle>
-                  <SheetDescription>
-                    Choose a sample script to load into the editor.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                  <select
-                    value={selectedSample}
-                    onChange={handleSampleSelect}
-                    className="rounded-md border-gray-200 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                  >
-                    <option value="">Select a sample script...</option>
-                    {sampleScripts.map(s => (
-                      <option key={s.title} value={s.title}>{s.title}</option>
-                    ))}
-                  </select>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <div className="flex gap-2 mb-2">
-                <Button variant="secondary" size="sm" onClick={handleParse}>
-                  Parse Script
-                </Button>
-                <label htmlFor="upload-script">
-                  <Button variant="ghost" size="sm" asChild>
-                    <span>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Script
-                    </span>
-                  </Button>
-                </label>
-                <input
-                  id="upload-script"
-                  type="file"
-                  accept=".txt, .script"
-                  className="hidden"
-                  onChange={handleUpload}
-                />
-                <Button variant="ghost" size="sm" onClick={handlePaste}>
-                  <ClipboardPaste className="h-4 w-4 mr-2" />
-                  <span>Paste from Clipboard</span>
-                </Button>
-              </div>
-
-              <textarea
-                value={script}
-                onChange={handleScriptChange}
-                placeholder="Enter or paste your script here..."
-                className="flex-grow p-3 border rounded-md focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-                rows={10}
-              />
-            </div>
-
-            <div>
-              <ScriptDisplay 
-                currentScene={currentScene}
-                characters={parsedScript.characters}
-                lines={parsedScript.lines}
+      <div className="min-h-screen flex flex-col w-full">
+        <div className="flex flex-1">
+          <AppSidebar
+            scenes={scenes}
+            currentScene={currentScene}
+            onSceneChange={setCurrentScene}
+            onGoBack={handleGoBack}
+          />
+          <main className="flex-1 bg-gray-50">
+            <div className="h-full max-w-5xl mx-auto px-2 py-4">
+              <ScriptDisplay
+                currentScene={currentScene ?? "all"}
+                characters={characters}
+                lines={filteredLines}
                 isPlaying={isPlaying}
-                onPlayPause={() => setIsPlaying(!isPlaying)}
+                onPlayPause={handlePlayPause}
                 selectedCharacter={selectedCharacter}
-                onSelectCharacter={setSelectedCharacter}
+                onSelectCharacter={handleCharacterSelect}
                 practiceMode={practiceMode}
-                onPracticeModeChange={setPracticeMode}
+                onPracticeModeChange={handlePracticeModeChange}
               />
             </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
     </SidebarProvider>
   );
 };
 
-export default IndexPage;
+export default Index;
