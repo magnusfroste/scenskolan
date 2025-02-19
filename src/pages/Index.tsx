@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import { Upload } from 'lucide-react';
@@ -11,15 +12,21 @@ const sampleCharacters = [
 ];
 
 const sampleLines = [
-  { character: "Flora", text: "Titti, Titti, Titti…. Är du redo med manuset" },
-  { character: "Titti", text: "Ja, såklart" },
-  { isStageDirection: true, character: "", text: "(Ljuset upp, skådespelarna står i statyer tills Flora kommer in)" },
-  { character: "Leila", text: "Två starka släkter fläckar med sin splittring Det ljuva Verona där vi spelar" },
+  { character: "Flora", text: "Titti, Titti, Titti…. Är du redo med manuset", scene: 1 },
+  { character: "Titti", text: "Ja, såklart", scene: 1 },
+  { isStageDirection: true, character: "", text: "(Ljuset upp, skådespelarna står i statyer tills Flora kommer in)", scene: 1 },
+  { character: "Leila", text: "Två starka släkter fläckar med sin splittring Det ljuva Verona där vi spelar", scene: 1 },
 ];
 
 interface ParsedScript {
   characters: { name: string; actor: string }[];
-  lines: { character: string; text: string; isStageDirection?: boolean }[];
+  lines: { 
+    character: string; 
+    text: string; 
+    isStageDirection?: boolean;
+    scene: number;
+  }[];
+  totalScenes: number;
 }
 
 const Index = () => {
@@ -29,6 +36,7 @@ const Index = () => {
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
   const [characters, setCharacters] = useState(sampleCharacters);
   const [lines, setLines] = useState(sampleLines);
+  const [totalScenes, setTotalScenes] = useState(1);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -46,6 +54,8 @@ const Index = () => {
     const lines: ParsedScript['lines'] = [];
     const characters = new Set<string>();
     const characterActors = new Map<string, string>();
+    let currentScene = 1;
+    let maxScene = 1;
 
     // Split the text into lines
     const textLines = text.split('\n');
@@ -55,12 +65,28 @@ const Index = () => {
       line = line.trim();
       if (!line) return;
 
+      // Check for scene markers (SCEN followed by a number)
+      const sceneMatch = line.match(/SCEN\s*(\d+)/i);
+      if (sceneMatch) {
+        currentScene = parseInt(sceneMatch[1], 10);
+        maxScene = Math.max(maxScene, currentScene);
+        // Add scene change as stage direction
+        lines.push({
+          character: '',
+          text: `(Scene ${currentScene})`,
+          isStageDirection: true,
+          scene: currentScene
+        });
+        return;
+      }
+
       // Check if it's a stage direction (text between parentheses)
       if (line.startsWith('(') && line.endsWith(')')) {
         lines.push({
           character: '',
           text: line,
           isStageDirection: true,
+          scene: currentScene
         });
         return;
       }
@@ -83,6 +109,7 @@ const Index = () => {
           lines.push({
             character,
             text,
+            scene: currentScene
           });
           return;
         }
@@ -104,6 +131,7 @@ const Index = () => {
     return {
       characters: charactersList,
       lines,
+      totalScenes: maxScene
     };
   };
 
@@ -117,11 +145,14 @@ const Index = () => {
       const parsed = parseScript(text);
       setCharacters(parsed.characters);
       setLines(parsed.lines);
+      setTotalScenes(parsed.totalScenes);
       setCurrentScene(1);
       setSelectedCharacter(null);
     };
     reader.readAsText(file);
   };
+
+  const filteredLines = lines.filter(line => line.scene === currentScene);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
@@ -145,7 +176,7 @@ const Index = () => {
         <ScriptDisplay
           currentScene={currentScene}
           characters={characters}
-          lines={lines}
+          lines={filteredLines}
           isPlaying={isPlaying}
           onPlayPause={handlePlayPause}
           selectedCharacter={selectedCharacter}
@@ -153,6 +184,24 @@ const Index = () => {
           practiceMode={practiceMode}
           onPracticeModeChange={handlePracticeModeChange}
         />
+
+        {totalScenes > 1 && (
+          <div className="mt-6 flex justify-center gap-2">
+            {Array.from({ length: totalScenes }, (_, i) => i + 1).map((sceneNum) => (
+              <button
+                key={sceneNum}
+                onClick={() => setCurrentScene(sceneNum)}
+                className={`px-4 py-2 rounded-lg transition-all ${
+                  currentScene === sceneNum
+                    ? 'bg-primary text-white'
+                    : 'bg-secondary hover:bg-gray-200'
+                }`}
+              >
+                Scene {sceneNum}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
