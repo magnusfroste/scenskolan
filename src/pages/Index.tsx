@@ -25,7 +25,7 @@ const sampleLines: ScriptLine[] = [
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState<string>("1");
+  const [currentScene, setCurrentScene] = useState("1");
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
   const [characters, setCharacters] = useState(sampleCharacters);
   const [lines, setLines] = useState<ScriptLine[]>(sampleLines);
@@ -64,29 +64,30 @@ const Index = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar
-          scenes={scenes}
-          currentScene={currentScene}
-          onSceneChange={setCurrentScene}
-        />
-        <main className="flex-1 bg-gray-50">
-          <div className="h-full max-w-5xl mx-auto px-2">
-            <ScriptHeader onFileUpload={handleFileUpload} />
-
-            <ScriptDisplay
-              currentScene={currentScene}
-              characters={characters}
-              lines={filteredLines}
-              isPlaying={isPlaying}
-              onPlayPause={handlePlayPause}
-              selectedCharacter={selectedCharacter}
-              onSelectCharacter={handleCharacterSelect}
-              practiceMode={practiceMode}
-              onPracticeModeChange={handlePracticeModeChange}
-            />
-          </div>
-        </main>
+      <div className="min-h-screen flex flex-col w-full">
+        <ScriptHeader onFileUpload={handleFileUpload} />
+        <div className="flex flex-1">
+          <AppSidebar
+            scenes={scenes}
+            currentScene={currentScene}
+            onSceneChange={setCurrentScene}
+          />
+          <main className="flex-1 bg-gray-50">
+            <div className="h-full max-w-5xl mx-auto px-2 py-4">
+              <ScriptDisplay
+                currentScene={currentScene}
+                characters={characters}
+                lines={filteredLines}
+                isPlaying={isPlaying}
+                onPlayPause={handlePlayPause}
+                selectedCharacter={selectedCharacter}
+                onSelectCharacter={handleCharacterSelect}
+                practiceMode={practiceMode}
+                onPracticeModeChange={handlePracticeModeChange}
+              />
+            </div>
+          </main>
+        </div>
       </div>
     </SidebarProvider>
   );
