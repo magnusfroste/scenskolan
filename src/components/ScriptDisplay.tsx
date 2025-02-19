@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Play, Pause } from 'lucide-react';
 
@@ -54,12 +53,15 @@ const ScriptDisplay = ({
     return true;
   };
 
+  const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
+  const sceneName = firstSceneLine ? firstSceneLine.text : `Scene ${currentScene}`;
+
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
       {/* Controls */}
       <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium text-gray-600">Scene {currentScene}</span>
+          <span className="text-sm font-medium text-gray-600">{currentScene === 'all' ? 'All Scenes' : sceneName}</span>
           <div className="flex items-center gap-0.5 bg-secondary rounded-lg p-0.5">
             <button
               onClick={() => onPracticeModeChange('full')}

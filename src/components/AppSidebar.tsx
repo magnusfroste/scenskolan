@@ -18,10 +18,16 @@ interface AppSidebarProps {
   currentScene: string | null;
   onSceneChange: (scene: string | null) => void;
   onGoBack: () => void;
+  lines: Line[];
 }
 
-export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: AppSidebarProps) {
+export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, lines }: AppSidebarProps) {
   if (scenes.length <= 1) return null;
+
+  const getSceneName = (sceneNum: string) => {
+    const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === sceneNum);
+    return firstSceneLine ? firstSceneLine.text : `Scene ${sceneNum}`;
+  };
 
   return (
     <Sidebar className="!w-48">
@@ -53,7 +59,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: Ap
                     onClick={() => onSceneChange(sceneNum)}
                     className={currentScene === sceneNum ? "bg-primary/10" : ""}
                   >
-                    <span>Scene {sceneNum}</span>
+                    <span>{getSceneName(sceneNum)}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

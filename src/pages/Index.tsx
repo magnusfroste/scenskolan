@@ -98,6 +98,7 @@ const Index = () => {
             currentScene={currentScene}
             onSceneChange={setCurrentScene}
             onGoBack={() => setHasScript(false)}
+            lines={lines}
           />
           <main className="flex-1 bg-gray-50">
             <div className="h-full max-w-5xl mx-auto px-2 py-4">
