@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Play, Pause, Eye, EyeOff } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 
 interface Character {
   name: string;
@@ -14,7 +14,7 @@ interface Line {
 }
 
 interface ScriptDisplayProps {
-  currentScene: number;
+  currentScene: string;
   characters: Character[];
   lines: Line[];
   isPlaying: boolean;

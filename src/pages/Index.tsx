@@ -6,6 +6,7 @@ import { parseScript } from '@/utils/scriptParser';
 import type { Character, ScriptLine } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { Upload } from 'lucide-react';
 
 // Sample data
 const sampleCharacters: Character[] = [
@@ -27,9 +28,10 @@ const Index = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [currentScene, setCurrentScene] = useState("1");
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
-  const [characters, setCharacters] = useState(sampleCharacters);
-  const [lines, setLines] = useState<ScriptLine[]>(sampleLines);
-  const [scenes, setScenes] = useState<string[]>(["1"]);
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [lines, setLines] = useState<ScriptLine[]>([]);
+  const [scenes, setScenes] = useState<string[]>([]);
+  const [hasScript, setHasScript] = useState(false);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -56,11 +58,38 @@ const Index = () => {
       setScenes(parsed.scenes);
       setCurrentScene(parsed.scenes[0]);
       setSelectedCharacter(null);
+      setHasScript(true);
     };
     reader.readAsText(file);
   };
 
   const filteredLines = lines.filter(line => line.scene === currentScene);
+
+  if (!hasScript) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+        <div className="text-center max-w-2xl mx-auto space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900">Script Trainer</h1>
+          <p className="text-xl text-gray-600">
+            Upload your script and practice your lines with our interactive reader.
+          </p>
+          <div className="flex flex-col items-center gap-4">
+            <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
+              <Upload size={24} className="text-gray-500" />
+              <span className="text-sm font-medium text-gray-600">Upload your script</span>
+              <span className="text-xs text-gray-500">Drag and drop or click to select</span>
+              <input
+                type="file"
+                accept=".txt"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
