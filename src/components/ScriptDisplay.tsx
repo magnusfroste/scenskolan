@@ -176,15 +176,9 @@ const ScriptDisplay = ({
     
     if (selectedCharacter === line.character) {
       const baseOpacity = Math.max(0.1, contrastLevel / 100);
-      if (practiceMode === 'lines') {
-        return {
-          backgroundColor: `rgba(155, 135, 245, ${baseOpacity})`,
-        };
-      } else {
-        return {
-          backgroundColor: `rgba(229, 222, 255, ${baseOpacity})`,
-        };
-      }
+      return {
+        backgroundColor: `rgba(155, 135, 245, ${baseOpacity})`,
+      };
     }
     
     return {
@@ -244,7 +238,7 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('cues')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                       practiceMode === 'cues'
-                        ? 'bg-[#7E69AB] text-white shadow-sm'
+                        ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -263,7 +257,7 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('lines')}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                       practiceMode === 'lines'
-                        ? 'bg-[#6E59A5] text-white shadow-sm'
+                        ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -331,7 +325,7 @@ const ScriptDisplay = ({
           return (
             <div
               key={index}
-              className={`${getLineClassName(line)} ${
+              className={`p-2 rounded-lg transition-all hover:opacity-90 ${
                 isCurrentLine ? 'ring-1 ring-[#9b87f5] ring-opacity-30' : ''
               }`}
               style={getLineStyle(line)}
