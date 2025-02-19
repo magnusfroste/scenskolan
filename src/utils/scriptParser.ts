@@ -1,5 +1,5 @@
 
-import { ParsedScript, ScriptLine } from '@/types/script';
+import { ParsedScript, ScriptLine, Character } from '@/types/script';
 
 export const parseScript = (text: string): ParsedScript => {
   const lines: ScriptLine[] = [];
@@ -7,6 +7,7 @@ export const parseScript = (text: string): ParsedScript => {
   const characterActors = new Map<string, string>();
   const scenesSet = new Set<string>();
   let currentScene = "1";
+  let isInRollerSection = false;
 
   // Split the text into lines
   const textLines = text.split('\n');
@@ -16,60 +17,78 @@ export const parseScript = (text: string): ParsedScript => {
     line = line.trim();
     if (!line) return;
 
-    // Check for scene markers (supports both SCEN 4 and SCEN 4:1 formats)
-    const sceneMatch = line.match(/SCEN\s*(\d+(?::\d+)?)/i);
-    if (sceneMatch) {
-      currentScene = sceneMatch[1];
-      scenesSet.add(currentScene);
-      // Add scene change as stage direction
-      lines.push({
-        character: '',
-        text: `(Scene ${currentScene})`,
-        isStageDirection: true,
-        scene: currentScene
-      });
+    // Check if we're entering the ROLLER section
+    if (line.toUpperCase() === 'ROLLER') {
+      isInRollerSection = true;
       return;
     }
 
-    // Check if it's a stage direction (text between parentheses)
-    if (line.startsWith('(') && line.endsWith(')')) {
-      lines.push({
-        character: '',
-        text: line,
-        isStageDirection: true,
-        scene: currentScene
-      });
-      return;
-    }
-
-    // Check if it's a character name with actor definition (Format: Character – Actor)
-    if (line.includes('–') || line.includes('-')) {
-      const [character, actor] = line.split(/[–-]/).map(part => part.trim());
-      if (character && actor) {
-        characters.add(character);
-        characterActors.set(character, actor);
-        return;
+    // If we're in the ROLLER section, parse character-actor pairs
+    if (isInRollerSection) {
+      // Check if the line contains a character-actor pair
+      if (line.includes('–') || line.includes('-')) {
+        const [character, actor] = line.split(/[–-]/).map(part => part.trim());
+        if (character && actor) {
+          characters.add(character);
+          characterActors.set(character, actor);
+          return;
+        }
+      }
+      
+      // If we encounter a line that doesn't match the character-actor format,
+      // assume we're out of the ROLLER section
+      if (!line.includes('–') && !line.includes('-')) {
+        isInRollerSection = false;
       }
     }
 
-    // Check if it's a character's line (Format: Character: Text)
-    if (line.includes(':')) {
-      const [character, text] = line.split(':').map(part => part.trim());
-      if (character && text) {
-        characters.add(character);
+    // If we're not in the ROLLER section, process regular script lines
+    if (!isInRollerSection) {
+      // Check for scene markers (supports both SCEN 4 and SCEN 4:1 formats)
+      const sceneMatch = line.match(/SCEN\s*(\d+(?::\d+)?)/i);
+      if (sceneMatch) {
+        currentScene = sceneMatch[1];
+        scenesSet.add(currentScene);
+        // Add scene change as stage direction
         lines.push({
-          character,
-          text,
+          character: '',
+          text: `(Scene ${currentScene})`,
+          isStageDirection: true,
           scene: currentScene
         });
         return;
       }
-    }
 
-    // If it's just text and we have a previous line, assume it's continuation
-    if (lines.length > 0 && !line.includes(':')) {
-      const lastLine = lines[lines.length - 1];
-      lastLine.text += ' ' + line;
+      // Check if it's a stage direction (text between parentheses)
+      if (line.startsWith('(') && line.endsWith(')')) {
+        lines.push({
+          character: '',
+          text: line,
+          isStageDirection: true,
+          scene: currentScene
+        });
+        return;
+      }
+
+      // Check if it's a character's line (Format: Character: Text)
+      if (line.includes(':')) {
+        const [character, text] = line.split(':').map(part => part.trim());
+        if (character && text) {
+          characters.add(character);
+          lines.push({
+            character,
+            text,
+            scene: currentScene
+          });
+          return;
+        }
+      }
+
+      // If it's just text and we have a previous line, assume it's continuation
+      if (lines.length > 0 && !line.includes(':')) {
+        const lastLine = lines[lines.length - 1];
+        lastLine.text += ' ' + line;
+      }
     }
   });
 
