@@ -1,9 +1,9 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Character {
   name: string;
@@ -44,7 +44,6 @@ const ScriptDisplay = ({
   const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
   const visibleLinesRef = useRef<Line[]>([]);
 
-  // Get active characters for the current scene
   const getActiveCharacters = () => {
     if (currentScene === 'all') return characters;
     
@@ -157,39 +156,64 @@ const ScriptDisplay = ({
         <div className="flex items-center gap-4 flex-1">
           <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
           <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1 ml-auto mr-4">
-            <button
-              onClick={() => onPracticeModeChange('full')}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                practiceMode === 'full'
-                  ? 'bg-[#8B5CF6] text-white shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <BookOpen size={18} />
-              Full
-            </button>
-            <button
-              onClick={() => onPracticeModeChange('cues')}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                practiceMode === 'cues'
-                  ? 'bg-[#D946EF] text-white shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <BookCopy size={18} />
-              Cues
-            </button>
-            <button
-              onClick={() => onPracticeModeChange('lines')}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                practiceMode === 'lines'
-                  ? 'bg-[#F97316] text-white shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <BookText size={18} />
-              Lines
-            </button>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => onPracticeModeChange('full')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      practiceMode === 'full'
+                        ? 'bg-[#8B5CF6] text-white shadow-sm'
+                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BookOpen size={18} />
+                    Full
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[200px]">
+                  <p>Show the complete script with all lines visible</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => onPracticeModeChange('cues')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      practiceMode === 'cues'
+                        ? 'bg-[#D946EF] text-white shadow-sm'
+                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BookCopy size={18} />
+                    Cues
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[200px]">
+                  <p>Shows your lines and the lines that come right before yours (your cues), helping you learn when to speak</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => onPracticeModeChange('lines')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                      practiceMode === 'lines'
+                        ? 'bg-[#F97316] text-white shadow-sm'
+                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BookText size={18} />
+                    Lines
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[200px]">
+                  <p>Shows only your character's lines, perfect for memorization practice</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         <button
