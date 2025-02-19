@@ -4,7 +4,6 @@ import { ParsedScript, ScriptLine, Character } from '@/types/script';
 export const parseScript = (text: string): ParsedScript => {
   const lines: ScriptLine[] = [];
   const characters = new Set<string>();
-  const characterActors = new Map<string, string>();
   const scenesSet = new Set<string>();
   let currentScene = "1";
   let isInRollerSection = false;
@@ -23,14 +22,13 @@ export const parseScript = (text: string): ParsedScript => {
       return;
     }
 
-    // If we're in the ROLLER section, parse character-actor pairs
+    // If we're in the ROLLER section, parse character names
     if (isInRollerSection) {
       // Check if the line contains a character-actor pair
       if (line.includes('–') || line.includes('-')) {
-        const [character, actor] = line.split(/[–-]/).map(part => part.trim());
-        if (character && actor) {
+        const [character] = line.split(/[–-]/).map(part => part.trim());
+        if (character) {
           characters.add(character);
-          characterActors.set(character, actor);
           return;
         }
       }
@@ -92,10 +90,10 @@ export const parseScript = (text: string): ParsedScript => {
     }
   });
 
-  // Convert characters to the required format
+  // Convert characters to the required format (with empty actor field)
   const charactersList = Array.from(characters).map(char => ({
     name: char,
-    actor: characterActors.get(char) || '',
+    actor: '', // We don't track actor names anymore
   }));
 
   // Convert scenes set to sorted array
