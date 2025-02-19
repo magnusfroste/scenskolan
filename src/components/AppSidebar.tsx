@@ -15,8 +15,8 @@ import {
 
 interface AppSidebarProps {
   scenes: string[];
-  currentScene: string;
-  onSceneChange: (scene: string) => void;
+  currentScene: string | null;
+  onSceneChange: (scene: string | null) => void;
   onGoBack: () => void;
 }
 
@@ -39,6 +39,14 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: Ap
           <SidebarGroupLabel>Scenes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => onSceneChange(null)}
+                  className={currentScene === null ? "bg-primary/10" : ""}
+                >
+                  <span>All Scenes</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {scenes.map((sceneNum) => (
                 <SidebarMenuItem key={sceneNum}>
                   <SidebarMenuButton

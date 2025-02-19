@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import { parseScript } from '@/utils/scriptParser';
@@ -23,7 +24,7 @@ const sampleLines: ScriptLine[] = [
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState("1");
+  const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
   const [characters, setCharacters] = useState<Character[]>([]);
   const [lines, setLines] = useState<ScriptLine[]>([]);
@@ -53,14 +54,14 @@ const Index = () => {
       setCharacters(parsed.characters);
       setLines(parsed.lines);
       setScenes(parsed.scenes);
-      setCurrentScene(parsed.scenes[0]);
+      setCurrentScene(null);
       setSelectedCharacter(null);
       setHasScript(true);
     };
     reader.readAsText(file);
   };
 
-  const filteredLines = lines.filter(line => line.scene === currentScene);
+  const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
 
   if (!hasScript) {
     return (
@@ -101,7 +102,7 @@ const Index = () => {
           <main className="flex-1 bg-gray-50">
             <div className="h-full max-w-5xl mx-auto px-2 py-4">
               <ScriptDisplay
-                currentScene={currentScene}
+                currentScene={currentScene ?? "all"}
                 characters={characters}
                 lines={filteredLines}
                 isPlaying={isPlaying}
