@@ -68,13 +68,18 @@ export const parseScript = (text: string): ParsedScript => {
         return;
       }
 
-      // Check if it's a character's line (Format: Character: Text)
+      // Check if it's a character's line (Format: Character: Text or Character (action): Text)
       if (line.includes(':')) {
-        const [character, text] = line.split(':').map(part => part.trim());
-        if (character && text) {
-          characters.add(character);
+        let [character, ...textParts] = line.split(':').map(part => part.trim());
+        const text = textParts.join(':').trim(); // Rejoin in case there were multiple colons
+        
+        // Extract character name if there's a stage direction after it
+        const characterMatch = character.match(/^([^(]+)(?:\s*\([^)]+\))?/);
+        if (characterMatch && text) {
+          const cleanCharacterName = characterMatch[1].trim();
+          characters.add(cleanCharacterName);
           lines.push({
-            character,
+            character: cleanCharacterName,
             text,
             scene: currentScene
           });
