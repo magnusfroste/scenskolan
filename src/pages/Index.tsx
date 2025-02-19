@@ -11,32 +11,34 @@ const sampleCharacters = [
   { name: "Tim", actor: "John" },
 ];
 
-const sampleLines = [
-  { character: "Flora", text: "Titti, Titti, Titti…. Är du redo med manuset", scene: 1 },
-  { character: "Titti", text: "Ja, såklart", scene: 1 },
-  { isStageDirection: true, character: "", text: "(Ljuset upp, skådespelarna står i statyer tills Flora kommer in)", scene: 1 },
-  { character: "Leila", text: "Två starka släkter fläckar med sin splittring Det ljuva Verona där vi spelar", scene: 1 },
+type ScriptLine = {
+  character: string;
+  text: string;
+  scene: string;
+  isStageDirection?: boolean;
+}
+
+const sampleLines: ScriptLine[] = [
+  { character: "Flora", text: "Titti, Titti, Titti…. Är du redo med manuset", scene: "1" },
+  { character: "Titti", text: "Ja, såklart", scene: "1" },
+  { isStageDirection: true, character: "", text: "(Ljuset upp, skådespelarna står i statyer tills Flora kommer in)", scene: "1" },
+  { character: "Leila", text: "Två starka släkter fläckar med sin splittring Det ljuva Verona där vi spelar", scene: "1" },
 ];
 
 interface ParsedScript {
   characters: { name: string; actor: string }[];
-  lines: { 
-    character: string; 
-    text: string; 
-    isStageDirection?: boolean;
-    scene: number;
-  }[];
-  totalScenes: number;
+  lines: ScriptLine[];
+  scenes: string[];
 }
 
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState(1);
+  const [currentScene, setCurrentScene] = useState<string>("1");
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
   const [characters, setCharacters] = useState(sampleCharacters);
-  const [lines, setLines] = useState(sampleLines);
-  const [totalScenes, setTotalScenes] = useState(1);
+  const [lines, setLines] = useState<ScriptLine[]>(sampleLines);
+  const [scenes, setScenes] = useState<string[]>(["1"]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -51,11 +53,11 @@ const Index = () => {
   };
 
   const parseScript = (text: string): ParsedScript => {
-    const lines: ParsedScript['lines'] = [];
+    const lines: ScriptLine[] = [];
     const characters = new Set<string>();
     const characterActors = new Map<string, string>();
-    let currentScene = 1;
-    let maxScene = 1;
+    const scenesSet = new Set<string>();
+    let currentScene = "1";
 
     // Split the text into lines
     const textLines = text.split('\n');
@@ -65,11 +67,11 @@ const Index = () => {
       line = line.trim();
       if (!line) return;
 
-      // Check for scene markers (SCEN followed by a number)
-      const sceneMatch = line.match(/SCEN\s*(\d+)/i);
+      // Check for scene markers (supports both SCEN 4 and SCEN 4:1 formats)
+      const sceneMatch = line.match(/SCEN\s*(\d+(?::\d+)?)/i);
       if (sceneMatch) {
-        currentScene = parseInt(sceneMatch[1], 10);
-        maxScene = Math.max(maxScene, currentScene);
+        currentScene = sceneMatch[1];
+        scenesSet.add(currentScene);
         // Add scene change as stage direction
         lines.push({
           character: '',
@@ -128,10 +130,20 @@ const Index = () => {
       actor: characterActors.get(char) || '',
     }));
 
+    // Convert scenes set to sorted array
+    const sortedScenes = Array.from(scenesSet).sort((a, b) => {
+      const [aMajor, aMinor = "0"] = a.split(":");
+      const [bMajor, bMinor = "0"] = b.split(":");
+      const aMajorNum = parseInt(aMajor);
+      const bMajorNum = parseInt(bMajor);
+      if (aMajorNum !== bMajorNum) return aMajorNum - bMajorNum;
+      return parseInt(aMinor) - parseInt(bMinor);
+    });
+
     return {
       characters: charactersList,
       lines,
-      totalScenes: maxScene
+      scenes: sortedScenes.length > 0 ? sortedScenes : ["1"]
     };
   };
 
@@ -145,8 +157,8 @@ const Index = () => {
       const parsed = parseScript(text);
       setCharacters(parsed.characters);
       setLines(parsed.lines);
-      setTotalScenes(parsed.totalScenes);
-      setCurrentScene(1);
+      setScenes(parsed.scenes);
+      setCurrentScene(parsed.scenes[0]);
       setSelectedCharacter(null);
     };
     reader.readAsText(file);
@@ -185,9 +197,9 @@ const Index = () => {
           onPracticeModeChange={handlePracticeModeChange}
         />
 
-        {totalScenes > 1 && (
-          <div className="mt-6 flex justify-center gap-2">
-            {Array.from({ length: totalScenes }, (_, i) => i + 1).map((sceneNum) => (
+        {scenes.length > 1 && (
+          <div className="mt-6 flex justify-center gap-2 flex-wrap">
+            {scenes.map((sceneNum) => (
               <button
                 key={sceneNum}
                 onClick={() => setCurrentScene(sceneNum)}
