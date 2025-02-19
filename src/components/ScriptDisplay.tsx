@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Play, Pause, BookOpen, BookCopy, BookText } from 'lucide-react';
+import { Play, Pause, BookOpen, BookCopy, BookText, SunDim } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Slider } from "@/components/ui/slider";
 
 interface Character {
   name: string;
@@ -41,6 +42,7 @@ const ScriptDisplay = ({
   onPracticeModeChange,
 }: ScriptDisplayProps) => {
   const [currentLineIndex, setCurrentLineIndex] = useState(-1);
+  const [contrastLevel, setContrastLevel] = useState(50);
   const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
   const visibleLinesRef = useRef<Line[]>([]);
 
@@ -114,7 +116,7 @@ const ScriptDisplay = ({
           : `${currentLine.character}: ${currentLine.text}`;
 
         const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.rate = 0.9; // Slightly slower rate for better clarity
+        utterance.rate = 0.9;
         utterance.onend = () => {
           setCurrentLineIndex(prev => prev + 1);
         };
@@ -133,7 +135,7 @@ const ScriptDisplay = ({
       speechSynthesisRef.current?.cancel();
       onPlayPause();
     } else {
-      setCurrentLineIndex(0); // Start from the beginning
+      setCurrentLineIndex(0);
       onPlayPause();
     }
   };
@@ -148,6 +150,11 @@ const ScriptDisplay = ({
 
   const handleScriptPaste = () => {
     console.log('Script pasted');
+  };
+
+  const getOpacityValue = (baseOpacity: number) => {
+    const multiplier = (contrastLevel + 50) / 100;
+    return Math.min(Math.max(baseOpacity * multiplier, 0), 1);
   };
 
   return (
@@ -216,12 +223,34 @@ const ScriptDisplay = ({
             </TooltipProvider>
           </div>
         </div>
-        <button
-          onClick={handlePlayPause}
-          className="p-1.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity"
-        >
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-        </button>
+        <div className="flex items-center gap-3">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2">
+                  <SunDim size={16} className="text-gray-500" />
+                  <Slider
+                    value={[contrastLevel]}
+                    onValueChange={(value) => setContrastLevel(value[0])}
+                    max={100}
+                    min={0}
+                    step={1}
+                    className="w-24"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Adjust contrast for better visibility</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <button
+            onClick={handlePlayPause}
+            className="p-1.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity"
+          >
+            {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+          </button>
+        </div>
       </div>
 
       <div className="p-1.5 flex flex-wrap gap-1 border-b bg-gray-50">
@@ -243,18 +272,26 @@ const ScriptDisplay = ({
       <div className="space-y-2 p-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
         {lines.map((line, index) => {
           const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
+          const getHighlightStyle = () => {
+            if (!shouldShowLine(line)) {
+              return `bg-secondary/50 blur-sm hover:blur-none cursor-help`;
+            }
+            if (line.isStageDirection) {
+              return `bg-accent/50 italic text-gray-600 hover:bg-accent/70`;
+            }
+            if (selectedCharacter === line.character) {
+              const opacity = getOpacityValue(0.05);
+              return `bg-primary bg-opacity-[${opacity}] hover:bg-opacity-[${opacity * 2}]`;
+            }
+            return 'bg-white hover:bg-gray-50';
+          };
+
           return (
             <div
               key={index}
-              className={`p-2 rounded-lg transition-all ${
-                !shouldShowLine(line)
-                  ? 'bg-secondary/50 blur-sm hover:blur-none cursor-help'
-                  : line.isStageDirection
-                  ? 'bg-accent/50 italic text-gray-600 hover:bg-accent/70'
-                  : selectedCharacter === line.character
-                  ? 'bg-primary/5 hover:bg-primary/10'
-                  : 'bg-white hover:bg-gray-50'
-              } ${isCurrentLine ? 'ring-1 ring-primary ring-opacity-30' : ''}`}
+              className={`p-2 rounded-lg transition-all ${getHighlightStyle()} ${
+                isCurrentLine ? 'ring-1 ring-primary ring-opacity-30' : ''
+              }`}
             >
               {!line.isStageDirection && (
                 <div className="font-medium text-xs text-gray-500 mb-0.5">
