@@ -11,6 +11,34 @@ import { Button } from "@/components/ui/button";
 
 const sampleScripts = [
   {
+    title: "Tre Vänner",
+    description: "Tre vänner bygger en koja",
+    content: `SCEN 1
+Lisa: Ska vi bygga en koja idag?
+Erik: Ja! Jag har idéer!
+Sara: Var ska vi bygga den?
+Lisa: Under det stora trädet!
+(Alla springer till trädet)
+
+SCEN 2
+Erik: Jag hittar grenar!
+Sara: Jag samlar löv!
+Lisa: Jag gör dörren!
+(De arbetar tillsammans)
+Erik: Titta hur fin den blir!
+Sara: Vi är bra på att bygga!
+
+SCEN 3
+Lisa: Nu är kojan klar!
+Erik: Ska vi gå in?
+Sara: Ja! Det är mysigt här!
+(Alla sitter i kojan)
+Lisa: Det här är vår hemliga plats!
+Erik: Vår bästa koja någonsin!
+Sara: Vänner för alltid!
+Alla: (tillsammans) Hurra!`
+  },
+  {
     title: "Skogspicknick",
     description: "En magisk picknick i skogen",
     content: `SCEN 1
