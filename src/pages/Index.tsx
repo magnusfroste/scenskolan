@@ -11,6 +11,42 @@ import { Button } from "@/components/ui/button";
 
 const sampleScripts = [
   {
+    title: "Skogspicknick",
+    description: "En magisk picknick i skogen",
+    content: `SCEN 1
+Kanin: Hej alla! Ska vi ha picknick idag?
+Ekorre: Ja! Jag tar med nötter!
+(Djuren samlas på ängen)
+Igelkott: Jag har ett stort äpple!
+Fågel: Jag sjunger en glad sång!
+(Fågeln börjar sjunga)
+
+SCEN 2
+Räv: Får jag vara med?
+Kanin: Ja! Du är välkommen!
+Ekorre: Vi delar allt med varandra.
+(Alla sätter sig i en ring)
+Igelkott: Det här är den bästa dagen!
+Fågel: (sjunger) La la la!
+
+SCEN 3
+Kanin: Titta! Det regnar!
+Räv: Kom! Vi springer till trädet!
+(Alla springer till det stora trädet)
+Ekorre: Vi är torra här!
+Igelkott: Vi kan fortsätta vår picknick här!
+Fågel: Regnet är som musik!
+
+SCEN 4
+Kanin: Regnet har slutat! Titta på regnbågen!
+Alla: (tillsammans) Så vacker!
+Räv: Tack för en fin dag!
+Ekorre: Vi är de bästa vännerna!
+Igelkott: Ses vi imorgon?
+Fågel: Ja! Adjö, vänner!
+Alla: (tillsammans) Adjö!`
+  },
+  {
     title: "Alice in Wonderland",
     description: "A magical journey down the rabbit hole",
     content: `SCENE 1
