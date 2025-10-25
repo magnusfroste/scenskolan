@@ -210,20 +210,22 @@ const Index = () => {
 
   if (!hasScript) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
-        <div className="text-center max-w-2xl mx-auto space-y-6">
-          <h1 className="text-4xl font-bold text-gray-900">Stage Stars ⭐</h1>
-          <p className="text-xl text-gray-600">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-8">
+        <div className="text-center max-w-2xl mx-auto space-y-6 w-full">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">Stage Stars ⭐</h1>
+          <p className="text-base md:text-xl text-gray-600 px-2">
             Your magical script buddy! ✨ Turn your lines into dazzling performances and become the star of the show.
           </p>
-          <div className="flex flex-col items-center gap-8">
-            <div className="flex gap-4">
+          <div className="flex flex-col items-center gap-6 w-full">
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full max-w-md md:max-w-none">
               <Sheet>
                 <SheetTrigger asChild>
-                  <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
-                    <HelpCircle size={24} className="text-gray-500" />
-                    <span className="text-sm font-medium text-gray-600">Script Instructions</span>
-                    <span className="text-xs text-gray-500">Format guidelines</span>
+                  <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer w-full md:w-auto">
+                    <HelpCircle size={24} className="text-gray-500 flex-shrink-0" />
+                    <div className="flex flex-col items-start md:items-center">
+                      <span className="text-sm font-medium text-gray-600">Script Instructions</span>
+                      <span className="text-xs text-gray-500">Format guidelines</span>
+                    </div>
                   </div>
                 </SheetTrigger>
                 <SheetContent>
@@ -265,10 +267,12 @@ Alice: Yes, please.`}
                 </SheetContent>
               </Sheet>
 
-              <label className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
-                <Upload size={24} className="text-gray-500" />
-                <span className="text-sm font-medium text-gray-600">Upload your script</span>
-                <span className="text-xs text-gray-500">Drag and drop or click to select</span>
+              <label className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer w-full md:w-auto">
+                <Upload size={24} className="text-gray-500 flex-shrink-0" />
+                <div className="flex flex-col items-start md:items-center">
+                  <span className="text-sm font-medium text-gray-600">Upload your script</span>
+                  <span className="text-xs text-gray-500">Tap to select file</span>
+                </div>
                 <input
                   type="file"
                   accept=".txt"
@@ -279,10 +283,12 @@ Alice: Yes, please.`}
               
               <Sheet>
                 <SheetTrigger asChild>
-                  <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer">
-                    <ClipboardPaste size={24} className="text-gray-500" />
-                    <span className="text-sm font-medium text-gray-600">Paste your script</span>
-                    <span className="text-xs text-gray-500">Click to open editor</span>
+                  <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-all cursor-pointer w-full md:w-auto">
+                    <ClipboardPaste size={24} className="text-gray-500 flex-shrink-0" />
+                    <div className="flex flex-col items-start md:items-center">
+                      <span className="text-sm font-medium text-gray-600">Paste your script</span>
+                      <span className="text-xs text-gray-500">Tap to open editor</span>
+                    </div>
                   </div>
                 </SheetTrigger>
                 <SheetContent>
@@ -307,19 +313,19 @@ Alice: Yes, please.`}
               </Sheet>
             </div>
 
-            <div className="w-full">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="w-full max-w-4xl">
+              <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles size={20} className="text-purple-500" />
-                <h2 className="text-lg font-semibold text-gray-900">Try a sample script</h2>
+                <h2 className="text-base md:text-lg font-semibold text-gray-900">Try a sample script</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 {sampleScripts.map((script, index) => (
                   <button
                     key={index}
                     onClick={() => handleSampleScript(script)}
-                    className="text-left p-4 bg-white border rounded-lg hover:border-purple-500 transition-all group"
+                    className="text-left p-4 bg-white border-2 rounded-lg hover:border-purple-500 active:border-purple-600 transition-all group min-h-[80px]"
                   >
-                    <h3 className="font-semibold text-gray-900 group-hover:text-purple-600">{script.title}</h3>
+                    <h3 className="text-base font-semibold text-gray-900 group-hover:text-purple-600">{script.title}</h3>
                     <p className="text-sm text-gray-600 mt-1">{script.description}</p>
                   </button>
                 ))}
@@ -342,7 +348,7 @@ Alice: Yes, please.`}
             onGoBack={handleGoBack}
           />
           <main className="flex-1 bg-gray-50">
-            <div className="h-full max-w-5xl mx-auto px-2 py-4">
+            <div className="h-full max-w-5xl mx-auto px-3 md:px-4 py-3 md:py-4">
               <ScriptDisplay
                 currentScene={currentScene ?? "all"}
                 characters={characters}

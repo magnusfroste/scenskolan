@@ -208,23 +208,23 @@ const ScriptDisplay = ({
 
   return (
     <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
-      <div className="sticky top-0 z-10 flex items-center justify-between p-2 bg-white border-b">
-        <div className="flex items-center gap-4 flex-1">
-          <span className="text-sm font-medium text-gray-600">{getSceneName()}</span>
-          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1 ml-auto mr-4">
+      <div className="sticky top-0 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 p-2 md:p-3 bg-white border-b">
+        <span className="text-sm md:text-base font-medium text-gray-600 w-full md:w-auto">{getSceneName()}</span>
+        <div className="flex items-center justify-between w-full md:w-auto gap-2">
+          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1">
             <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => onPracticeModeChange('full')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                    className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'full'
                         ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <BookOpen size={18} />
-                    Full
+                    <BookOpen size={16} className="md:w-[18px] md:h-[18px]" />
+                    <span className="hidden md:inline">Full</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
@@ -236,14 +236,14 @@ const ScriptDisplay = ({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => onPracticeModeChange('cues')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                    className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'cues'
                         ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <BookCopy size={18} />
-                    Cues
+                    <BookCopy size={16} className="md:w-[18px] md:h-[18px]" />
+                    <span className="hidden md:inline">Cues</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
@@ -255,14 +255,14 @@ const ScriptDisplay = ({
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => onPracticeModeChange('lines')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                    className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'lines'
                         ? 'bg-[#9b87f5] text-white shadow-sm'
                         : 'bg-white text-gray-600 hover:bg-gray-50'
                     }`}
                   >
-                    <BookText size={18} />
-                    Lines
+                    <BookText size={16} className="md:w-[18px] md:h-[18px]" />
+                    <span className="hidden md:inline">Lines</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
@@ -271,43 +271,43 @@ const ScriptDisplay = ({
               </Tooltip>
             </TooltipProvider>
           </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-2">
-                  <SunDim size={16} className="text-gray-500" />
-                  <Slider
-                    value={[contrastLevel]}
-                    onValueChange={(value) => setContrastLevel(value[0])}
-                    max={100}
-                    min={0}
-                    step={1}
-                    className="w-24"
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Adjust contrast for better visibility</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <button
-            onClick={handlePlayPause}
-            className="p-1.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity"
-          >
-            {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-          </button>
+          <div className="flex items-center gap-2 md:gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="hidden md:flex items-center gap-2">
+                    <SunDim size={16} className="text-gray-500" />
+                    <Slider
+                      value={[contrastLevel]}
+                      onValueChange={(value) => setContrastLevel(value[0])}
+                      max={100}
+                      min={0}
+                      step={1}
+                      className="w-24"
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Adjust contrast for better visibility</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <button
+              onClick={handlePlayPause}
+              className="p-2 md:p-1.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity touch-manipulation"
+            >
+              {isPlaying ? <Pause size={18} className="md:w-4 md:h-4" /> : <Play size={18} className="md:w-4 md:h-4" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="p-1.5 flex flex-wrap gap-1 border-b bg-gray-50">
+      <div className="p-2 md:p-1.5 flex flex-wrap gap-1.5 md:gap-1 border-b bg-gray-50">
         {getActiveCharacters().map((char) => (
           <button
             key={char.name}
             onClick={() => onSelectCharacter(char.name)}
-            className={`px-2 py-0.5 rounded-full text-xs transition-all ${
+            className={`px-3 md:px-2 py-1.5 md:py-0.5 rounded-full text-sm md:text-xs transition-all touch-manipulation ${
               selectedCharacter === char.name
                 ? 'bg-[#9b87f5] text-white'
                 : 'bg-white hover:bg-gray-50'
@@ -318,24 +318,24 @@ const ScriptDisplay = ({
         ))}
       </div>
 
-      <div className="space-y-2 p-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
+      <div className="space-y-2 p-3 md:p-3 max-h-[calc(100vh-14rem)] md:max-h-[calc(100vh-10rem)] overflow-y-auto">
         {lines.map((line, index) => {
           const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
           
           return (
             <div
               key={index}
-              className={`p-2 rounded-lg transition-all hover:opacity-90 ${
-                isCurrentLine ? 'ring-1 ring-[#9b87f5] ring-opacity-30' : ''
+              className={`p-3 md:p-2 rounded-lg transition-all hover:opacity-90 ${
+                isCurrentLine ? 'ring-2 md:ring-1 ring-[#9b87f5] ring-opacity-30' : ''
               }`}
               style={getLineStyle(line)}
             >
               {!line.isStageDirection && (
-                <div className="font-medium text-xs text-gray-900 mb-0.5">
+                <div className="font-medium text-sm md:text-xs text-gray-900 mb-1 md:mb-0.5">
                   {line.character}:
                 </div>
               )}
-              <div className="text-gray-900">
+              <div className="text-base md:text-sm text-gray-900 leading-relaxed">
                 {line.text}
               </div>
             </div>
