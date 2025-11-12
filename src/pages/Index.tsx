@@ -7,7 +7,7 @@ import { ScriptValidationDialog } from '@/components/ScriptValidationDialog';
 import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
 import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Upload, ClipboardPaste, Sparkles, HelpCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -430,6 +430,11 @@ Alice: Yes, please.`}
   return (
     <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full">
+        <header className="sticky top-0 z-10 flex items-center h-14 px-4 border-b bg-background">
+          <SidebarTrigger className="mr-4" />
+          <h1 className="text-lg font-semibold">Stage Stars ⭐</h1>
+        </header>
+        
         <div className="flex flex-1">
           <AppSidebar
             scenes={scenes}
