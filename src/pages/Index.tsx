@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
 import { parseScript } from '@/utils/scriptParser';
+import { validateScript, ValidationResult } from '@/utils/scriptValidator';
+import { ScriptValidationDialog } from '@/components/ScriptValidationDialog';
 import type { Character, ScriptLine } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
@@ -207,6 +209,9 @@ const Index = () => {
   const [scenes, setScenes] = useState<string[]>([]);
   const [hasScript, setHasScript] = useState(false);
   const [scriptText, setScriptText] = useState('');
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [pendingScriptText, setPendingScriptText] = useState<string>('');
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -237,13 +242,12 @@ const Index = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
-      const parsed = parseScript(text);
-      setCharacters(parsed.characters);
-      setLines(parsed.lines);
-      setScenes(parsed.scenes);
-      setCurrentScene(null);
-      setSelectedCharacter(null);
-      setHasScript(true);
+      
+      // Validate the script first
+      const validation = validateScript(text);
+      setValidationResult(validation);
+      setPendingScriptText(text);
+      setValidationDialogOpen(true);
     };
     reader.readAsText(file);
   };
@@ -251,7 +255,16 @@ const Index = () => {
   const handleScriptPaste = () => {
     if (!scriptText.trim()) return;
     
-    const parsed = parseScript(scriptText);
+    // Validate the script first
+    const validation = validateScript(scriptText);
+    setValidationResult(validation);
+    setPendingScriptText(scriptText);
+    setValidationDialogOpen(true);
+  };
+
+  const handleValidationContinue = () => {
+    // Parse the pending script
+    const parsed = parseScript(pendingScriptText);
     setCharacters(parsed.characters);
     setLines(parsed.lines);
     setScenes(parsed.scenes);
@@ -259,6 +272,14 @@ const Index = () => {
     setSelectedCharacter(null);
     setHasScript(true);
     setScriptText('');
+    setValidationDialogOpen(false);
+    setPendingScriptText('');
+  };
+
+  const handleValidationCancel = () => {
+    setValidationDialogOpen(false);
+    setPendingScriptText('');
+    setValidationResult(null);
   };
 
   const handleGoBack = () => {
@@ -428,6 +449,13 @@ Alice: Yes, please.`}
           </main>
         </div>
       </div>
+      <ScriptValidationDialog
+        open={validationDialogOpen}
+        onOpenChange={setValidationDialogOpen}
+        validationResult={validationResult}
+        onContinue={handleValidationContinue}
+        onCancel={handleValidationCancel}
+      />
     </SidebarProvider>
   );
 };
