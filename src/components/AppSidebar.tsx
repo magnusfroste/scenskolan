@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarHeader,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 
 interface AppSidebarProps {
@@ -18,9 +19,10 @@ interface AppSidebarProps {
   currentScene: string | null;
   onSceneChange: (scene: string | null) => void;
   onGoBack: () => void;
+  onConvert?: () => void;
 }
 
-export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: AppSidebarProps) {
+export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onConvert }: AppSidebarProps) {
   return (
     <Sidebar className="!w-48">
       <SidebarHeader className="border-b">
@@ -59,6 +61,17 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack }: Ap
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      {onConvert && (
+        <SidebarFooter className="border-t p-2">
+          <SidebarMenuButton
+            onClick={onConvert}
+            className="w-full flex items-center gap-2 text-sm"
+          >
+            <RefreshCw size={16} />
+            <span>Convert Format</span>
+          </SidebarMenuButton>
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }

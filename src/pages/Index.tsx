@@ -4,7 +4,8 @@ import ScriptDisplay from '@/components/ScriptDisplay';
 import { parseScript } from '@/utils/scriptParser';
 import { validateScript, ValidationResult } from '@/utils/scriptValidator';
 import { ScriptValidationDialog } from '@/components/ScriptValidationDialog';
-import type { Character, ScriptLine } from '@/types/script';
+import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
+import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Upload, ClipboardPaste, Sparkles, HelpCircle } from 'lucide-react';
@@ -212,6 +213,8 @@ const Index = () => {
   const [validationDialogOpen, setValidationDialogOpen] = useState(false);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [pendingScriptText, setPendingScriptText] = useState<string>('');
+  const [converterDialogOpen, setConverterDialogOpen] = useState(false);
+  const [parsedScript, setParsedScript] = useState<ParsedScript | null>(null);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -230,6 +233,7 @@ const Index = () => {
     setCharacters(parsed.characters);
     setLines(parsed.lines);
     setScenes(parsed.scenes);
+    setParsedScript(parsed);
     setCurrentScene(null);
     setSelectedCharacter(null);
     setHasScript(true);
@@ -268,6 +272,7 @@ const Index = () => {
     setCharacters(parsed.characters);
     setLines(parsed.lines);
     setScenes(parsed.scenes);
+    setParsedScript(parsed);
     setCurrentScene(null);
     setSelectedCharacter(null);
     setHasScript(true);
@@ -431,6 +436,7 @@ Alice: Yes, please.`}
             currentScene={currentScene}
             onSceneChange={setCurrentScene}
             onGoBack={handleGoBack}
+            onConvert={() => setConverterDialogOpen(true)}
           />
           <main className="flex-1 bg-gray-50">
             <div className="h-full max-w-5xl mx-auto px-3 md:px-4 py-3 md:py-4">
@@ -455,6 +461,11 @@ Alice: Yes, please.`}
         validationResult={validationResult}
         onContinue={handleValidationContinue}
         onCancel={handleValidationCancel}
+      />
+      <ScriptConverterDialog
+        open={converterDialogOpen}
+        onOpenChange={setConverterDialogOpen}
+        parsedScript={parsedScript}
       />
     </SidebarProvider>
   );
