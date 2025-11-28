@@ -161,7 +161,7 @@ const ScriptDisplay = ({
     if (!shouldShowLine(line)) {
       const blurIntensity = Math.max(2, 8 - (contrastLevel / 20));
       return {
-        backgroundColor: `rgba(244, 244, 245, 0.3)`,
+        backgroundColor: `hsl(35 25% 92% / 0.3)`,
         filter: `blur(${blurIntensity}px)`,
       };
     }
@@ -169,7 +169,7 @@ const ScriptDisplay = ({
     if (line.isStageDirection) {
       const opacity = Math.max(0.3, contrastLevel / 200);
       return {
-        backgroundColor: `rgba(249, 250, 251, ${opacity})`,
+        backgroundColor: `hsl(35 40% 94% / ${opacity})`,
         fontStyle: 'italic',
       };
     }
@@ -177,12 +177,12 @@ const ScriptDisplay = ({
     if (selectedCharacter === line.character) {
       const baseOpacity = Math.max(0.1, contrastLevel / 100);
       return {
-        backgroundColor: `rgba(155, 135, 245, ${baseOpacity})`,
+        backgroundColor: `hsl(352 70% 40% / ${baseOpacity * 0.15})`,
       };
     }
     
     return {
-      backgroundColor: 'white',
+      backgroundColor: 'hsl(var(--card))',
     };
   };
 
@@ -197,21 +197,21 @@ const ScriptDisplay = ({
       if (practiceMode === 'lines') {
         baseClasses += ' hover:opacity-[0.8]';
       } else {
-        baseClasses += ' hover:bg-[#D6BCFA] hover:opacity-[0.8]';
+        baseClasses += ' hover:bg-primary/20 hover:opacity-[0.8]';
       }
     } else {
-      baseClasses += ' hover:bg-gray-50';
+      baseClasses += ' hover:bg-accent';
     }
     
     return baseClasses;
   };
 
   return (
-    <div className="w-full mx-auto bg-white rounded-lg shadow-sm animate-fade-in">
-      <div className="sticky top-0 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 p-2 md:p-3 bg-white border-b">
-        <span className="text-sm md:text-base font-medium text-gray-600 w-full md:w-auto">{getSceneName()}</span>
+    <div className="w-full mx-auto bg-card rounded-lg shadow-sm animate-fade-in border border-border">
+      <div className="sticky top-0 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 p-2 md:p-3 bg-card border-b border-border rounded-t-lg">
+        <span className="text-sm md:text-base font-display font-medium text-foreground w-full md:w-auto">{getSceneName()}</span>
         <div className="flex items-center justify-between w-full md:w-auto gap-2">
-          <div className="flex items-center gap-1 bg-secondary/30 rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-secondary/50 rounded-xl p-1">
             <TooltipProvider delayDuration={300}>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -219,8 +219,8 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('full')}
                     className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'full'
-                        ? 'bg-[#9b87f5] text-white shadow-sm'
-                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-card text-muted-foreground hover:bg-accent hover:text-foreground'
                     }`}
                   >
                     <BookOpen size={16} className="md:w-[18px] md:h-[18px]" />
@@ -238,8 +238,8 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('cues')}
                     className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'cues'
-                        ? 'bg-[#9b87f5] text-white shadow-sm'
-                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-card text-muted-foreground hover:bg-accent hover:text-foreground'
                     }`}
                   >
                     <BookCopy size={16} className="md:w-[18px] md:h-[18px]" />
@@ -257,8 +257,8 @@ const ScriptDisplay = ({
                     onClick={() => onPracticeModeChange('lines')}
                     className={`px-2 md:px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors flex items-center gap-1 md:gap-2 ${
                       practiceMode === 'lines'
-                        ? 'bg-[#9b87f5] text-white shadow-sm'
-                        : 'bg-white text-gray-600 hover:bg-gray-50'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-card text-muted-foreground hover:bg-accent hover:text-foreground'
                     }`}
                   >
                     <BookText size={16} className="md:w-[18px] md:h-[18px]" />
@@ -276,7 +276,7 @@ const ScriptDisplay = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="hidden md:flex items-center gap-2">
-                    <SunDim size={16} className="text-gray-500" />
+                    <SunDim size={16} className="text-muted-foreground" />
                     <Slider
                       value={[contrastLevel]}
                       onValueChange={(value) => setContrastLevel(value[0])}
@@ -294,7 +294,7 @@ const ScriptDisplay = ({
             </TooltipProvider>
             <button
               onClick={handlePlayPause}
-              className="p-2 md:p-1.5 rounded-full bg-primary text-white hover:opacity-90 transition-opacity touch-manipulation"
+              className="p-2 md:p-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition-opacity touch-manipulation"
             >
               {isPlaying ? <Pause size={18} className="md:w-4 md:h-4" /> : <Play size={18} className="md:w-4 md:h-4" />}
             </button>
@@ -302,15 +302,15 @@ const ScriptDisplay = ({
         </div>
       </div>
 
-      <div className="p-2 md:p-1.5 flex flex-wrap gap-1.5 md:gap-1 border-b bg-gray-50">
+      <div className="p-2 md:p-1.5 flex flex-wrap gap-1.5 md:gap-1 border-b border-border bg-secondary/30">
         {getActiveCharacters().map((char) => (
           <button
             key={char.name}
             onClick={() => onSelectCharacter(char.name)}
             className={`px-3 md:px-2 py-1.5 md:py-0.5 rounded-full text-sm md:text-xs transition-all touch-manipulation ${
               selectedCharacter === char.name
-                ? 'bg-[#9b87f5] text-white'
-                : 'bg-white hover:bg-gray-50'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-card text-foreground hover:bg-accent'
             }`}
           >
             {char.name}
@@ -318,7 +318,7 @@ const ScriptDisplay = ({
         ))}
       </div>
 
-      <div className="space-y-2 p-3 md:p-3 max-h-[calc(100vh-14rem)] md:max-h-[calc(100vh-10rem)] overflow-y-auto">
+      <div className="space-y-2 p-3 md:p-3 max-h-[calc(100vh-14rem)] md:max-h-[calc(100vh-10rem)] overflow-y-auto bg-card/50">
         {lines.map((line, index) => {
           const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
           
@@ -326,16 +326,16 @@ const ScriptDisplay = ({
             <div
               key={index}
               className={`p-3 md:p-2 rounded-lg transition-all hover:opacity-90 ${
-                isCurrentLine ? 'ring-2 md:ring-1 ring-[#9b87f5] ring-opacity-30' : ''
+                isCurrentLine ? 'ring-2 md:ring-1 ring-gold ring-opacity-50' : ''
               }`}
               style={getLineStyle(line)}
             >
               {!line.isStageDirection && (
-                <div className="font-medium text-sm md:text-xs text-gray-900 mb-1 md:mb-0.5">
+                <div className="font-semibold text-sm md:text-xs text-primary mb-1 md:mb-0.5">
                   {line.character}:
                 </div>
               )}
-              <div className="text-base md:text-sm text-gray-900 leading-relaxed">
+              <div className="text-base md:text-sm text-foreground leading-relaxed">
                 {line.text}
               </div>
             </div>

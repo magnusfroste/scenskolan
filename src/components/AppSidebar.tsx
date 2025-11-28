@@ -24,11 +24,11 @@ interface AppSidebarProps {
 
 export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onConvert }: AppSidebarProps) {
   return (
-    <Sidebar className="!w-48">
-      <SidebarHeader className="border-b">
+    <Sidebar className="!w-48 border-r border-border">
+      <SidebarHeader className="border-b border-border">
         <SidebarMenuButton
           onClick={onGoBack}
-          className="w-full flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+          className="w-full flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
         >
           <ArrowLeft size={16} />
           <span>Back to upload</span>
@@ -36,13 +36,13 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Scenes</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-display text-muted-foreground">Scenes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => onSceneChange(null)}
-                  className={currentScene === null ? "bg-primary/10" : ""}
+                  className={currentScene === null ? "bg-primary/10 text-primary font-medium" : "hover:bg-accent"}
                 >
                   <span>All Scenes</span>
                 </SidebarMenuButton>
@@ -51,7 +51,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
                 <SidebarMenuItem key={sceneNum}>
                   <SidebarMenuButton
                     onClick={() => onSceneChange(sceneNum)}
-                    className={currentScene === sceneNum ? "bg-primary/10" : ""}
+                    className={currentScene === sceneNum ? "bg-primary/10 text-primary font-medium" : "hover:bg-accent"}
                   >
                     <span>Scene {sceneNum}</span>
                   </SidebarMenuButton>
@@ -62,10 +62,10 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
         </SidebarGroup>
       </SidebarContent>
       {onConvert && (
-        <SidebarFooter className="border-t p-2">
+        <SidebarFooter className="border-t border-border p-2">
           <SidebarMenuButton
             onClick={onConvert}
-            className="w-full flex items-center gap-2 text-sm"
+            className="w-full flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
           >
             <RefreshCw size={16} />
             <span>Convert Format</span>
