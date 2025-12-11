@@ -280,7 +280,7 @@ const Index = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
         <div className="text-center max-w-2xl mx-auto space-y-6 w-full">
           <h1 className="text-3xl md:text-5xl font-display font-semibold text-foreground tracking-tight">
-            Stage Stars <span className="inline-block">🎭</span>
+            Scenskolan <span className="inline-block">🎭</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground px-2">
             Din kompis för att öva repliker!
@@ -460,7 +460,7 @@ Pippi: Vi går på cirkus!`}
       <div className="min-h-screen flex flex-col w-full">
         <header className="sticky top-0 z-10 flex items-center h-14 px-4 border-b border-border bg-card">
           <SidebarTrigger className="mr-4" />
-          <h1 className="text-lg font-display font-semibold text-foreground">Stage Stars 🎭</h1>
+          <h1 className="text-lg font-display font-semibold text-foreground">Scenskolan 🎭</h1>
         </header>
         
         <div className="flex flex-1">
