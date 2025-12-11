@@ -5,6 +5,7 @@ import { parseScript } from '@/utils/scriptParser';
 import { validateScript, ValidationResult } from '@/utils/scriptValidator';
 import { ScriptValidationDialog } from '@/components/ScriptValidationDialog';
 import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
+import { MiniScriptDemo } from '@/components/MiniScriptDemo';
 import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
@@ -408,6 +409,11 @@ Alice: Yes, please.`}
                   <span className="text-xs md:text-sm font-medium text-foreground">3. Öva repliker</span>
                   <span className="text-xs text-muted-foreground hidden md:block">Tre övningslägen att välja på</span>
                 </div>
+              </div>
+              
+              {/* Mini demo */}
+              <div className="mt-6">
+                <MiniScriptDemo />
               </div>
             </div>
 
