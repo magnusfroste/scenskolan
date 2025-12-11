@@ -283,7 +283,7 @@ const Index = () => {
             Stage Stars <span className="inline-block">🎭</span>
           </h1>
           <p className="text-base md:text-lg text-muted-foreground px-2">
-            Take center stage! Your script practice buddy.
+            Din kompis för att öva repliker!
           </p>
           <div className="flex flex-col items-center gap-6 w-full">
             <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full max-w-md md:max-w-none">
@@ -292,44 +292,43 @@ const Index = () => {
                   <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
                     <HelpCircle size={24} className="text-muted-foreground flex-shrink-0" />
                     <div className="flex flex-col items-start md:items-center">
-                      <span className="text-sm font-medium text-foreground">Script Instructions</span>
-                      <span className="text-xs text-muted-foreground">Format guidelines</span>
+                      <span className="text-sm font-medium text-foreground">Instruktioner</span>
+                      <span className="text-xs text-muted-foreground">Så skriver du manus</span>
                     </div>
                   </div>
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle>Script Format Instructions</SheetTitle>
+                    <SheetTitle>Så skriver du manus</SheetTitle>
                     <SheetDescription>
-                      Your script should follow these formatting rules:
+                      Ditt manus ska följa dessa regler:
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4 text-left">
-                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                      <h3 className="text-sm font-semibold text-blue-800 mb-1">Importing Your Script</h3>
-                      <p className="text-sm text-blue-700">
-                        - File uploads currently support .txt files only<br />
-                        - You can also easily copy and paste your script text directly
+                    <div className="mb-4 p-3 bg-accent/50 border border-primary/20 rounded-md">
+                      <h3 className="text-sm font-semibold text-foreground mb-1">Importera ditt manus</h3>
+                      <p className="text-sm text-muted-foreground">
+                        - Filuppladdning stöder .txt-filer<br />
+                        - Du kan också klistra in manus direkt
                       </p>
                     </div>
-                    <ul className="list-disc pl-4 space-y-2">
-                      <li>Start each scene with "SCENE" followed by a number</li>
-                      <li>Write character names followed by a colon (e.g., "Alice: Hello there!")</li>
-                      <li>Use parentheses for stage directions (e.g., "(enters stage)")</li>
-                      <li>Separate scenes with blank lines</li>
-                      <li>Group related characters/roles at the start using "ROLLER" or "CAST"</li>
+                    <ul className="list-disc pl-4 space-y-2 text-sm">
+                      <li>Börja varje scen med "SCEN" följt av ett nummer</li>
+                      <li>Skriv rollnamn följt av kolon (t.ex. "Pippi: Hej alla!")</li>
+                      <li>Använd parenteser för scenanvisningar (t.ex. "(springer in)")</li>
+                      <li>Separera scener med tomma rader</li>
                     </ul>
-                    <div className="mt-4 p-4 bg-gray-100 rounded-md">
-                      <p className="text-sm font-medium mb-2">Example:</p>
-                      <pre className="text-xs whitespace-pre-wrap">
-{`SCENE 1
-Alice: Oh dear! Oh dear! I shall be late!
-(Alice runs across the stage)
-White Rabbit: I'm late, I'm late!
+                    <div className="mt-4 p-4 bg-muted rounded-md">
+                      <p className="text-sm font-medium mb-2">Exempel:</p>
+                      <pre className="text-xs whitespace-pre-wrap text-foreground">
+{`SCEN 1
+Pippi: Hej Tommy och Annika!
+(Pippi springer in på scenen)
+Tommy: Hej Pippi!
 
-SCENE 2
-Mad Hatter: Would you like some tea?
-Alice: Yes, please.`}
+SCEN 2
+Annika: Vad ska vi göra idag?
+Pippi: Vi går på cirkus!`}
                       </pre>
                     </div>
                   </div>
@@ -339,8 +338,8 @@ Alice: Yes, please.`}
               <label className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
                 <Upload size={24} className="text-muted-foreground flex-shrink-0" />
                 <div className="flex flex-col items-start md:items-center">
-                  <span className="text-sm font-medium text-foreground">Upload your script</span>
-                  <span className="text-xs text-muted-foreground">Tap to select file</span>
+                  <span className="text-sm font-medium text-foreground">Ladda upp manus</span>
+                  <span className="text-xs text-muted-foreground">Välj en fil</span>
                 </div>
                 <input
                   type="file"
@@ -355,16 +354,16 @@ Alice: Yes, please.`}
                   <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
                     <ClipboardPaste size={24} className="text-muted-foreground flex-shrink-0" />
                     <div className="flex flex-col items-start md:items-center">
-                      <span className="text-sm font-medium text-foreground">Paste your script</span>
-                      <span className="text-xs text-muted-foreground">Tap to open editor</span>
+                      <span className="text-sm font-medium text-foreground">Klistra in manus</span>
+                      <span className="text-xs text-muted-foreground">Öppna textredigerare</span>
                     </div>
                   </div>
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <SheetTitle>Paste Your Script</SheetTitle>
+                    <SheetTitle>Klistra in ditt manus</SheetTitle>
                     <SheetDescription>
-                      Paste your script text here. Make sure it follows the correct format.
+                      Klistra in din manustext här. Se till att den följer rätt format.
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4">
@@ -372,10 +371,10 @@ Alice: Yes, please.`}
                       value={scriptText}
                       onChange={(e) => setScriptText(e.target.value)}
                       className="w-full h-[300px] p-4 border rounded-md"
-                      placeholder="Paste your script here..."
+                      placeholder="Klistra in ditt manus här..."
                     />
                     <Button onClick={handleScriptPaste} className="w-full">
-                      Process Script
+                      Läs in manus
                     </Button>
                   </div>
                 </SheetContent>
@@ -438,6 +437,20 @@ Alice: Yes, please.`}
             </div>
           </div>
         </div>
+        
+        {/* Footer */}
+        <footer className="mt-auto py-6 text-center">
+          <p className="text-xs text-muted-foreground/60">
+            Skapad av{' '}
+            <a href="https://www.froste.eu" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              Magnus Froste
+            </a>
+            {' '}·{' '}
+            <a href="https://github.com/magnusfroste" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+              Öppen källkod
+            </a>
+          </p>
+        </footer>
       </div>
     );
   }
