@@ -1,3 +1,4 @@
+// VIEW LAYER: App sidebar component
 
 import React from 'react';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
@@ -31,12 +32,12 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
           className="w-full flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
         >
           <ArrowLeft size={16} />
-          <span>Back to upload</span>
+          <span>Tillbaka</span>
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-display text-muted-foreground">Scenes</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-display text-muted-foreground">Scener</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -44,7 +45,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
                   onClick={() => onSceneChange(null)}
                   className={currentScene === null ? "bg-primary/10 text-primary font-medium" : "hover:bg-accent"}
                 >
-                  <span>All Scenes</span>
+                  <span>Alla scener</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {scenes.map((sceneNum) => (
@@ -53,7 +54,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
                     onClick={() => onSceneChange(sceneNum)}
                     className={currentScene === sceneNum ? "bg-primary/10 text-primary font-medium" : "hover:bg-accent"}
                   >
-                    <span>Scene {sceneNum}</span>
+                    <span>Scen {sceneNum}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -68,7 +69,7 @@ export function AppSidebar({ scenes, currentScene, onSceneChange, onGoBack, onCo
             className="w-full flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
           >
             <RefreshCw size={16} />
-            <span>Convert Format</span>
+            <span>Konvertera format</span>
           </SidebarMenuButton>
         </SidebarFooter>
       )}
