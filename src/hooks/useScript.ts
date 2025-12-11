@@ -1,10 +1,16 @@
-// MODEL LAYER: Script state management hook
+// MODEL LAYER: Script state management hook with localStorage persistence
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { parseScript } from '@/utils/scriptParser';
 import { validateScript, ValidationResult } from '@/utils/scriptValidator';
 import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { SampleScript } from '@/data/sampleScripts';
+import { useLocalStorage } from './useLocalStorage';
+
+interface SavedScriptData {
+  content: string;
+  title?: string;
+}
 
 interface UseScriptReturn {
   // State
@@ -13,6 +19,7 @@ interface UseScriptReturn {
   scenes: string[];
   parsedScript: ParsedScript | null;
   hasScript: boolean;
+  scriptTitle: string | null;
   
   // Validation state
   validationResult: ValidationResult | null;
@@ -32,16 +39,40 @@ export const useScript = (): UseScriptReturn => {
   const [scenes, setScenes] = useState<string[]>([]);
   const [parsedScript, setParsedScript] = useState<ParsedScript | null>(null);
   const [hasScript, setHasScript] = useState(false);
+  const [scriptTitle, setScriptTitle] = useState<string | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [pendingScriptText, setPendingScriptText] = useState('');
 
-  const applyParsedScript = useCallback((parsed: ParsedScript) => {
+  // Persist script to localStorage
+  const [savedScript, setSavedScript, clearSavedScript] = useLocalStorage<SavedScriptData | null>(
+    'scenskolan-saved-script',
+    null
+  );
+
+  const applyParsedScript = useCallback((parsed: ParsedScript, content: string, title?: string) => {
     setCharacters(parsed.characters);
     setLines(parsed.lines);
     setScenes(parsed.scenes);
     setParsedScript(parsed);
     setHasScript(true);
-  }, []);
+    setScriptTitle(title || null);
+    
+    // Save to localStorage
+    setSavedScript({ content, title });
+  }, [setSavedScript]);
+
+  // Load saved script on mount
+  useEffect(() => {
+    if (savedScript?.content && !hasScript) {
+      const parsed = parseScript(savedScript.content);
+      setCharacters(parsed.characters);
+      setLines(parsed.lines);
+      setScenes(parsed.scenes);
+      setParsedScript(parsed);
+      setHasScript(true);
+      setScriptTitle(savedScript.title || null);
+    }
+  }, []); // Only run on mount
 
   const loadScript = useCallback((text: string): ValidationResult => {
     const validation = validateScript(text);
@@ -52,14 +83,14 @@ export const useScript = (): UseScriptReturn => {
 
   const loadSampleScript = useCallback((sample: SampleScript) => {
     const parsed = parseScript(sample.content);
-    applyParsedScript(parsed);
+    applyParsedScript(parsed, sample.content, sample.title);
   }, [applyParsedScript]);
 
   const confirmScript = useCallback(() => {
     if (!pendingScriptText) return;
     
     const parsed = parseScript(pendingScriptText);
-    applyParsedScript(parsed);
+    applyParsedScript(parsed, pendingScriptText);
     setPendingScriptText('');
     setValidationResult(null);
   }, [pendingScriptText, applyParsedScript]);
@@ -75,7 +106,9 @@ export const useScript = (): UseScriptReturn => {
     setLines([]);
     setScenes([]);
     setParsedScript(null);
-  }, []);
+    setScriptTitle(null);
+    clearSavedScript();
+  }, [clearSavedScript]);
 
   return {
     characters,
@@ -83,6 +116,7 @@ export const useScript = (): UseScriptReturn => {
     scenes,
     parsedScript,
     hasScript,
+    scriptTitle,
     validationResult,
     pendingScriptText,
     loadScript,
