@@ -6,6 +6,11 @@ import { validateScript, ValidationResult } from '@/utils/scriptValidator';
 import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { SampleScript } from '@/data/sampleScripts';
 import { useLocalStorage } from './useLocalStorage';
+import { 
+  getSharedScriptFromUrl, 
+  clearScriptFromUrl, 
+  generateShareUrl 
+} from '@/utils/scriptSharing';
 
 interface SavedScriptData {
   content: string;
@@ -20,6 +25,7 @@ interface UseScriptReturn {
   parsedScript: ParsedScript | null;
   hasScript: boolean;
   scriptTitle: string | null;
+  scriptContent: string | null;
   
   // Validation state
   validationResult: ValidationResult | null;
@@ -31,6 +37,7 @@ interface UseScriptReturn {
   confirmScript: () => void;
   cancelValidation: () => void;
   resetScript: () => void;
+  getShareUrl: () => string | null;
 }
 
 export const useScript = (): UseScriptReturn => {
@@ -40,6 +47,7 @@ export const useScript = (): UseScriptReturn => {
   const [parsedScript, setParsedScript] = useState<ParsedScript | null>(null);
   const [hasScript, setHasScript] = useState(false);
   const [scriptTitle, setScriptTitle] = useState<string | null>(null);
+  const [scriptContent, setScriptContent] = useState<string | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [pendingScriptText, setPendingScriptText] = useState('');
 
@@ -56,13 +64,23 @@ export const useScript = (): UseScriptReturn => {
     setParsedScript(parsed);
     setHasScript(true);
     setScriptTitle(title || null);
+    setScriptContent(content);
     
     // Save to localStorage
     setSavedScript({ content, title });
   }, [setSavedScript]);
 
-  // Load saved script on mount
+  // Check for shared script in URL on mount (priority over localStorage)
   useEffect(() => {
+    const sharedScript = getSharedScriptFromUrl();
+    if (sharedScript) {
+      const parsed = parseScript(sharedScript.content);
+      applyParsedScript(parsed, sharedScript.content, sharedScript.title);
+      clearScriptFromUrl();
+      return;
+    }
+    
+    // Fall back to localStorage
     if (savedScript?.content && !hasScript) {
       const parsed = parseScript(savedScript.content);
       setCharacters(parsed.characters);
@@ -71,6 +89,7 @@ export const useScript = (): UseScriptReturn => {
       setParsedScript(parsed);
       setHasScript(true);
       setScriptTitle(savedScript.title || null);
+      setScriptContent(savedScript.content);
     }
   }, []); // Only run on mount
 
@@ -107,8 +126,14 @@ export const useScript = (): UseScriptReturn => {
     setScenes([]);
     setParsedScript(null);
     setScriptTitle(null);
+    setScriptContent(null);
     clearSavedScript();
   }, [clearSavedScript]);
+
+  const getShareUrl = useCallback((): string | null => {
+    if (!scriptContent) return null;
+    return generateShareUrl(scriptTitle || 'Delat manus', scriptContent);
+  }, [scriptContent, scriptTitle]);
 
   return {
     characters,
@@ -117,6 +142,7 @@ export const useScript = (): UseScriptReturn => {
     parsedScript,
     hasScript,
     scriptTitle,
+    scriptContent,
     validationResult,
     pendingScriptText,
     loadScript,
@@ -124,5 +150,6 @@ export const useScript = (): UseScriptReturn => {
     confirmScript,
     cancelValidation,
     resetScript,
+    getShareUrl,
   };
 };
