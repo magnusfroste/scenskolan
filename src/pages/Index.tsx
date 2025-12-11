@@ -8,11 +8,108 @@ import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
 import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Upload, ClipboardPaste, Sparkles, HelpCircle } from 'lucide-react';
+import { Upload, ClipboardPaste, Sparkles, HelpCircle, FileText, UserCircle, Play } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 const sampleScripts = [
+  {
+    title: "Pippi på cirkus",
+    description: "Pippi visar sina konster",
+    content: `SCEN 1
+Pippi: Hej Tommy och Annika! Ska vi gå på cirkus idag?
+Tommy: Ja! Jag älskar cirkus!
+Annika: Men har vi pengar till biljetter?
+Pippi: Pengar? Jag har en hel väska full!
+(Pippi tar fram en stor väska med guldpengar)
+Tommy: Oj! Var kommer alla de ifrån?
+Pippi: Min pappa är kung på en sydhavsö!
+
+SCEN 2
+Cirkusdirektören: Damer och herrar! Välkomna till cirkus!
+Pippi: Vad spännande!
+(En lindansare går ut på linan)
+Annika: Åh, hon är så duktig!
+Pippi: Det där kan väl jag också!
+Tommy: Pippi, nej! Du kan inte bara...
+(Pippi klättrar upp och går på linan)
+Cirkusdirektören: Vem är det barnet?!
+
+SCEN 3
+Pippi: Titta på mig! Jag kan dansa på linan!
+(Publiken jublar)
+Stark Man: Finns det någon som vågar brottas med mig?
+Pippi: Jag! Jag är ganska stark!
+Tommy: Pippi är världens starkaste!
+(Pippi lyfter upp den starke mannen)
+Annika: Hon vann! Hon vann!
+Alla: (tillsammans) Hurra för Pippi!`
+  },
+  {
+    title: "Emil i snickarboa",
+    description: "Emil har gjort bus igen",
+    content: `SCEN 1
+Lansen: EMIL! Kom hit genast!
+Emil: Ja, pappa?
+(Emil kommer in med oskyldigt ansikte)
+Lansen: Vem har släppt ut alla grisar?
+Emil: Det var inte meningen...
+Alma: Stackars lansen, nu blir du alldeles röd i ansiktet!
+Alfred: Jag tyckte det var lite roligt faktiskt.
+Ida: Emil gör alltid bus!
+
+SCEN 2
+Lansen: Nu får du sitta i snickarboa!
+Emil: Men pappa! Jag ville bara hjälpa grisarna!
+(Emil går in i snickarboden)
+Alfred: Jag smyger dit med lite mat sen, Emil.
+Emil: Tack Alfred! Du är min bästa vän!
+(Dörren stängs)
+Lina: Den pojken! Han är hopplös!
+
+SCEN 3
+(Emil sitter och snider gubbar)
+Emil: Nu gör jag den hundrafemtionde gubben!
+(Ida tittar in genom fönstret)
+Ida: Hej Emil! Får jag se?
+Emil: Titta! Den här ser ut som pappa när han är arg!
+Ida: Ha ha! Den är precis lik!
+Emil: Imorgon ska jag vara snäll. Kanske.
+Ida: Det säger du alltid!
+Emil: Men nu menar jag det! Nästan.`
+  },
+  {
+    title: "Ronja och Birk",
+    description: "Ett möte i skogen",
+    content: `SCEN 1
+Ronja: Vem är du? Vad gör du i min skog?
+Birk: Din skog? Det är min skog!
+(De stirrar argt på varandra)
+Ronja: Jag är Ronja Rövardotter! Mattis är min far!
+Birk: Och jag är Birk Borkason! Vi är fiender!
+Ronja: Fiender? Varför då?
+Birk: Det har vi alltid varit!
+
+SCEN 2
+(Ronja ramlar ner i en grop)
+Ronja: Hjälp! Jag kan inte ta mig upp!
+Birk: Ska jag hjälpa dig?
+Ronja: Ja! Snälla!
+(Birk sträcker ner sin hand)
+Birk: Här! Ta min hand!
+Ronja: Tack! Du räddade mig!
+Birk: Kanske kan vi vara vänner istället?
+
+SCEN 3
+Ronja: Vi ses vid bäcken imorgon?
+Birk: Ja! Men säg inte till våra fäder!
+(De skakar hand)
+Ronja: Det blir vår hemlighet.
+Birk: Vänner i hemlighet!
+Ronja: Jag tycker faktiskt att du är ganska snäll.
+Birk: Du med! För att vara en Mattisdotter!
+Båda: (skrattar) Ses imorgon!`
+  },
   {
     title: "Tre Vänner",
     description: "Tre vänner bygger en koja",
@@ -76,127 +173,6 @@ Ekorre: Vi är de bästa vännerna!
 Igelkott: Ses vi imorgon?
 Fågel: Ja! Adjö, vänner!
 Alla: (tillsammans) Adjö!`
-  },
-  {
-    title: "Alice in Wonderland",
-    description: "A magical journey down the rabbit hole",
-    content: `SCENE 1
-Alice: Oh dear! Oh dear! I shall be late!
-White Rabbit: I'm late, I'm late, for a very important date!
-(Alice follows the White Rabbit down the rabbit hole)
-Alice: What a curious thing! I seem to be falling!
-White Rabbit: No time to say hello, goodbye! I'm late, I'm late, I'm late!
-
-SCENE 2
-Mad Hatter: Would you like some tea?
-Alice: I suppose so... but I haven't been invited.
-March Hare: No room! No room!
-Alice: There's plenty of room!
-Mad Hatter: Your hair wants cutting.
-Alice: You should learn not to make personal remarks. It's very rude.
-(The Dormouse falls asleep in his teacup)
-March Hare: Have some more tea!
-Alice: I haven't had any yet, so I can't take more.
-
-SCENE 3
-Queen of Hearts: Off with her head!
-Alice: Nonsense!
-(The cards begin to swirl around Alice)
-White Rabbit: Oh my ears and whiskers!
-Queen of Hearts: Are you ready now to play croquet?
-Alice: Yes, your majesty.
-(The flamingos and hedgehogs arrange themselves for the game)
-
-SCENE 4
-Cheshire Cat: We're all mad here.
-Alice: How do you know I'm mad?
-Cheshire Cat: You must be, or you wouldn't have come here.
-(The Cheshire Cat slowly disappears, leaving only its grin)
-Alice: Now I've seen a cat without a grin, but never a grin without a cat!
-Mad Hatter: (appearing suddenly) Why is a raven like a writing desk?
-Alice: I believe I can guess that riddle!`
-  },
-  {
-    title: "Peter Pan",
-    description: "The boy who wouldn't grow up",
-    content: `SCENE 1
-Peter Pan: All children grow up... except one.
-Wendy: Can you really fly?
-(Peter floats in the air)
-Peter Pan: Of course I can! All it takes is faith, trust, and a little bit of pixie dust!
-John: I should like to fly very much.
-Michael: Me too!
-(Tinker Bell sprinkles fairy dust on the children)
-
-SCENE 2
-Captain Hook: Pan! Come out and fight like a man!
-Peter Pan: If you say so, Hook!
-Tinker Bell: *tinkles angrily*
-(Tinker Bell flies around sprinkling fairy dust)
-Smee: Careful, Captain!
-Captain Hook: Smee! Don't just stand there!
-(The pirates gather on deck)
-
-SCENE 3
-Lost Boys: Welcome to Neverland!
-Wendy: What a wonderful place!
-(The children explore the magical forest)
-John: Look! Indians!
-Tiger Lily: Welcome, Flying Children.
-Michael: Can we stay here forever?
-Peter Pan: Of course! In Neverland, you never have to grow up!
-
-SCENE 4
-Captain Hook: At last! The hideout of Peter Pan!
-Smee: Shall I wake the crocodile, Captain?
-(The ticking clock sound grows louder)
-Captain Hook: That dreadful beast! Keep it away!
-Peter Pan: Ready for another adventure, Hook?
-Lost Boys: (all together) Fight! Fight! Fight!
-Wendy: Oh, be careful Peter!`
-  },
-  {
-    title: "The Wizard of Oz",
-    description: "The magical journey to the Emerald City",
-    content: `SCENE 1
-Dorothy: Toto, I've a feeling we're not in Kansas anymore.
-(Glinda appears in a bubble)
-Glinda: Are you a good witch, or a bad witch?
-Dorothy: I'm not a witch at all. I'm Dorothy Gale from Kansas.
-(Munchkins peek out from their hiding places)
-Munchkins: (singing) Follow the yellow brick road!
-Dorothy: Where does it lead?
-Glinda: To the Emerald City, where the Wizard lives.
-
-SCENE 2
-Dorothy: What sort of creature are you?
-Scarecrow: I'm not really a creature at all. I'm a scarecrow, and I don't have a brain.
-Dorothy: How can you talk if you don't have a brain?
-Scarecrow: I don't know... but some people without brains do an awful lot of talking.
-(The Tin Man appears, completely rusted)
-Dorothy: Oh! A man made out of tin!
-Tin Man: Oil... can...
-
-SCENE 3
-Lion: Put 'em up, put 'em up! I'll fight you with one paw tied behind my back!
-Dorothy: You're nothing but a great big coward!
-Lion: You're right. I am a coward. I haven't any courage at all.
-Scarecrow: Perhaps the Wizard could help you too!
-Tin Man: To Oz?
-All Together: To Oz!
-
-SCENE 4
-Wizard: I am Oz, the Great and Terrible!
-Dorothy: Please, sir. I want to go home to Kansas.
-(The curtain is pulled back, revealing the real wizard)
-Scarecrow: You're not a real wizard at all!
-Wizard: I'm a good man, but I'm a very bad wizard.
-Lion: What about my courage?
-Wizard: You have plenty of courage. What you lack is confidence.
-(Glinda reappears)
-Glinda: You've always had the power to go back to Kansas.
-Dorothy: I have?
-Glinda: Just click your heels three times and say "There's no place like home."`
   }
 ];
 
@@ -405,10 +381,41 @@ Alice: Yes, please.`}
               </Sheet>
             </div>
 
+            {/* How it works section */}
+            <div className="w-full max-w-2xl">
+              <h2 className="text-base md:text-lg font-display font-semibold text-foreground text-center mb-6">
+                Så här funkar det
+              </h2>
+              <div className="grid grid-cols-3 gap-4 md:gap-6">
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FileText size={24} className="text-primary" />
+                  </div>
+                  <span className="text-xs md:text-sm font-medium text-foreground">1. Välj manus</span>
+                  <span className="text-xs text-muted-foreground hidden md:block">Ladda upp eller prova ett exempel</span>
+                </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                    <UserCircle size={24} className="text-primary" />
+                  </div>
+                  <span className="text-xs md:text-sm font-medium text-foreground">2. Välj din roll</span>
+                  <span className="text-xs text-muted-foreground hidden md:block">Markera karaktären du spelar</span>
+                </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Play size={24} className="text-primary" />
+                  </div>
+                  <span className="text-xs md:text-sm font-medium text-foreground">3. Öva repliker</span>
+                  <span className="text-xs text-muted-foreground hidden md:block">Tre övningslägen att välja på</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sample scripts section */}
             <div className="w-full max-w-4xl">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles size={20} className="text-gold" />
-                <h2 className="text-base md:text-lg font-display font-semibold text-foreground">Try a sample script</h2>
+                <h2 className="text-base md:text-lg font-display font-semibold text-foreground">Prova ett manus</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                 {sampleScripts.map((script, index) => (
