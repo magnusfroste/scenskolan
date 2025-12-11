@@ -7,12 +7,13 @@ import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
 import { MiniScriptDemo } from '@/components/MiniScriptDemo';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Upload, ClipboardPaste, Sparkles, HelpCircle, FileText, UserCircle, Play } from 'lucide-react';
+import { Upload, ClipboardPaste, Sparkles, HelpCircle, FileText, UserCircle, Play, Share2, Check } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useScript } from '@/hooks/useScript';
 import { useSettings } from '@/hooks/useSettings';
 import { sampleScripts } from '@/data/sampleScripts';
+import { toast } from 'sonner';
 
 const Index = () => {
   // View state (local only)
@@ -45,7 +46,24 @@ const Index = () => {
     confirmScript,
     cancelValidation,
     resetScript,
+    getShareUrl,
   } = useScript();
+
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = getShareUrl();
+    if (!url) return;
+    
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      toast.success('Länk kopierad!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('Kunde inte kopiera länken');
+    }
+  };
 
   const handleCharacterSelect = (character: string) => {
     updateSelectedCharacter(character === selectedCharacter ? null : character);
@@ -324,9 +342,22 @@ Pippi: Vi går på cirkus!`}
         onConvert={() => setConverterDialogOpen(true)}
       />
       <div className="min-h-screen flex flex-col w-full">
-        <header className="sticky top-0 z-10 flex items-center h-14 px-4 border-b border-border bg-card">
-          <SidebarTrigger className="mr-4" />
-          <h1 className="text-lg font-display font-semibold text-foreground">Scenskolan 🎭</h1>
+        <header className="sticky top-0 z-10 flex items-center justify-between h-14 px-4 border-b border-border bg-card">
+          <div className="flex items-center">
+            <SidebarTrigger className="mr-4" />
+            <h1 className="text-lg font-display font-semibold text-foreground">
+              {scriptTitle || 'Scenskolan'} 🎭
+            </h1>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleShare}
+            className="gap-2"
+          >
+            {copied ? <Check size={16} /> : <Share2 size={16} />}
+            <span className="hidden sm:inline">{copied ? 'Kopierad!' : 'Dela'}</span>
+          </Button>
         </header>
         
         <div className="flex flex-1">
