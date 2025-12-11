@@ -11,24 +11,34 @@ import { Upload, ClipboardPaste, Sparkles, HelpCircle, FileText, UserCircle, Pla
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useScript } from '@/hooks/useScript';
+import { useSettings } from '@/hooks/useSettings';
 import { sampleScripts } from '@/data/sampleScripts';
 
 const Index = () => {
-  // View state
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState<string | null>(null);
-  const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
+  // View state (local only)
   const [scriptText, setScriptText] = useState('');
   const [validationDialogOpen, setValidationDialogOpen] = useState(false);
   const [converterDialogOpen, setConverterDialogOpen] = useState(false);
 
-  // Model (hook)
+  // Persisted settings
+  const {
+    practiceMode,
+    selectedCharacter,
+    currentScene,
+    updatePracticeMode,
+    updateSelectedCharacter,
+    updateCurrentScene,
+    resetSettings,
+  } = useSettings();
+
+  // Script data (persisted)
   const {
     characters,
     lines,
     scenes,
     parsedScript,
     hasScript,
+    scriptTitle,
     validationResult,
     loadScript,
     loadSampleScript,
@@ -38,17 +48,17 @@ const Index = () => {
   } = useScript();
 
   const handleCharacterSelect = (character: string) => {
-    setSelectedCharacter(character === selectedCharacter ? null : character);
+    updateSelectedCharacter(character === selectedCharacter ? null : character);
   };
 
   const handlePracticeModeChange = (mode: 'full' | 'cues' | 'lines') => {
-    setPracticeMode(mode);
+    updatePracticeMode(mode);
   };
 
   const handleSampleScript = (script: typeof sampleScripts[0]) => {
     loadSampleScript(script);
-    setCurrentScene(null);
-    setSelectedCharacter(null);
+    updateCurrentScene(null);
+    updateSelectedCharacter(null);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +82,8 @@ const Index = () => {
 
   const handleValidationContinue = () => {
     confirmScript();
-    setCurrentScene(null);
-    setSelectedCharacter(null);
+    updateCurrentScene(null);
+    updateSelectedCharacter(null);
     setScriptText('');
     setValidationDialogOpen(false);
   };
@@ -85,8 +95,7 @@ const Index = () => {
 
   const handleGoBack = () => {
     resetScript();
-    setCurrentScene(null);
-    setSelectedCharacter(null);
+    resetSettings();
   };
 
   const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
@@ -310,7 +319,7 @@ Pippi: Vi går på cirkus!`}
       <AppSidebar
         scenes={scenes}
         currentScene={currentScene}
-        onSceneChange={setCurrentScene}
+        onSceneChange={updateCurrentScene}
         onGoBack={handleGoBack}
         onConvert={() => setConverterDialogOpen(true)}
       />
