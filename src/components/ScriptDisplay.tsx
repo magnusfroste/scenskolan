@@ -1,29 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+// VIEW LAYER: Script display component
+
+import React, { useState, useMemo } from 'react';
 import { Play, Pause, BookOpen, BookCopy, BookText, SunDim } from 'lucide-react';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
-
-interface Character {
-  name: string;
-  actor: string;
-}
-
-interface Line {
-  character: string;
-  text: string;
-  isStageDirection?: boolean;
-  scene: string;
-}
+import type { Character, ScriptLine } from '@/types/script';
+import { useScriptPlayback } from '@/hooks/useScriptPlayback';
 
 interface ScriptDisplayProps {
   currentScene: string;
   characters: Character[];
-  lines: Line[];
-  isPlaying: boolean;
-  onPlayPause: () => void;
+  lines: ScriptLine[];
   selectedCharacter: string | null;
   onSelectCharacter: (character: string) => void;
   practiceMode: 'full' | 'cues' | 'lines';
@@ -34,19 +21,20 @@ const ScriptDisplay = ({
   currentScene,
   characters,
   lines,
-  isPlaying,
-  onPlayPause,
   selectedCharacter,
   onSelectCharacter,
   practiceMode,
   onPracticeModeChange,
 }: ScriptDisplayProps) => {
-  const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   const [contrastLevel, setContrastLevel] = useState(50);
-  const speechSynthesisRef = useRef<SpeechSynthesis | null>(null);
-  const visibleLinesRef = useRef<Line[]>([]);
 
-  const getActiveCharacters = () => {
+  const { isPlaying, currentLineIndex, togglePlayback } = useScriptPlayback({
+    lines,
+    selectedCharacter,
+    practiceMode,
+  });
+
+  const activeCharacters = useMemo(() => {
     if (currentScene === 'all') return characters;
     
     const activeCharacterNames = new Set(
@@ -56,18 +44,24 @@ const ScriptDisplay = ({
     );
     
     return characters.filter(char => activeCharacterNames.has(char.name));
-  };
+  }, [currentScene, characters, lines]);
 
-  useEffect(() => {
-    speechSynthesisRef.current = window.speechSynthesis;
-    return () => {
-      if (speechSynthesisRef.current) {
-        speechSynthesisRef.current.cancel();
-      }
-    };
-  }, []);
+  const sceneName = useMemo(() => {
+    if (currentScene === 'all') return 'Alla scener';
+    const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
+    const sceneText = firstSceneLine?.text || '';
+    const sceneMatch = sceneText.match(/SCEN\s*(\d+(?::\d+)?)/i);
+    
+    if (sceneMatch) {
+      const [fullMatch, sceneNum] = sceneMatch;
+      let description = sceneText.replace(fullMatch, '').trim();
+      description = description.replace(/^[–-]\s*/, '');
+      return description ? `Scen ${sceneNum} ${description}` : `Scen ${sceneNum}`;
+    }
+    return `Scen ${currentScene}`;
+  }, [currentScene, lines]);
 
-  const shouldShowLine = (line: Line) => {
+  const shouldShowLine = (line: ScriptLine) => {
     if (practiceMode === 'full') return true;
     if (!selectedCharacter) return true;
     if (line.isStageDirection) return true;
@@ -85,79 +79,7 @@ const ScriptDisplay = ({
     return true;
   };
 
-  const getSceneName = () => {
-    if (currentScene === 'all') return 'All Scenes';
-    const firstSceneLine = lines.find(line => line.isStageDirection && line.scene === currentScene);
-    const sceneText = firstSceneLine?.text || '';
-    const sceneMatch = sceneText.match(/SCEN\s*(\d+(?::\d+)?)/i);
-    
-    if (sceneMatch) {
-      const [fullMatch, sceneNum] = sceneMatch;
-      let description = sceneText.replace(fullMatch, '').trim();
-      
-      description = description.replace(/^[–-]\s*/, '');
-      
-      return description ? `Scene ${sceneNum} ${description}` : `Scene ${sceneNum}`;
-    } else {
-      return `Scene ${currentScene}`;
-    }
-  };
-
-  useEffect(() => {
-    visibleLinesRef.current = lines.filter(line => shouldShowLine(line));
-  }, [lines, selectedCharacter, practiceMode]);
-
-  useEffect(() => {
-    if (isPlaying && currentLineIndex < visibleLinesRef.current.length) {
-      const currentLine = visibleLinesRef.current[currentLineIndex];
-      if (currentLine) {
-        const textToSpeak = currentLine.isStageDirection 
-          ? "Stage direction: " + currentLine.text
-          : `${currentLine.character}: ${currentLine.text}`;
-
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.rate = 0.9;
-        utterance.onend = () => {
-          setCurrentLineIndex(prev => prev + 1);
-        };
-
-        speechSynthesisRef.current?.speak(utterance);
-      }
-    }
-
-    return () => {
-      speechSynthesisRef.current?.cancel();
-    };
-  }, [isPlaying, currentLineIndex]);
-
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      speechSynthesisRef.current?.cancel();
-      onPlayPause();
-    } else {
-      setCurrentLineIndex(0);
-      onPlayPause();
-    }
-  };
-
-  useEffect(() => {
-    speechSynthesisRef.current?.cancel();
-    setCurrentLineIndex(-1);
-    if (isPlaying) {
-      onPlayPause();
-    }
-  }, [currentScene, selectedCharacter, practiceMode]);
-
-  const handleScriptPaste = () => {
-    console.log('Script pasted');
-  };
-
-  const getOpacityValue = (baseOpacity: number) => {
-    const multiplier = (contrastLevel + 50) / 100;
-    return Math.min(Math.max(baseOpacity * multiplier, 0), 1);
-  };
-
-  const getLineStyle = (line: Line) => {
+  const getLineStyle = (line: ScriptLine) => {
     if (!shouldShowLine(line)) {
       const blurIntensity = Math.max(2, 8 - (contrastLevel / 20));
       return {
@@ -170,7 +92,7 @@ const ScriptDisplay = ({
       const opacity = Math.max(0.3, contrastLevel / 200);
       return {
         backgroundColor: `hsl(35 40% 94% / ${opacity})`,
-        fontStyle: 'italic',
+        fontStyle: 'italic' as const,
       };
     }
     
@@ -186,31 +108,18 @@ const ScriptDisplay = ({
     };
   };
 
-  const getLineClassName = (line: Line) => {
-    let baseClasses = 'p-2 rounded-lg transition-all';
-    
-    if (!shouldShowLine(line)) {
-      baseClasses += ' hover:blur-none cursor-help';
-    } else if (line.isStageDirection) {
-      baseClasses += ' hover:bg-accent/70';
-    } else if (selectedCharacter === line.character) {
-      if (practiceMode === 'lines') {
-        baseClasses += ' hover:opacity-[0.8]';
-      } else {
-        baseClasses += ' hover:bg-primary/20 hover:opacity-[0.8]';
-      }
-    } else {
-      baseClasses += ' hover:bg-accent';
-    }
-    
-    return baseClasses;
-  };
+  const visibleLines = useMemo(() => 
+    lines.filter(shouldShowLine), 
+    [lines, selectedCharacter, practiceMode]
+  );
 
   return (
     <div className="w-full mx-auto bg-card rounded-lg shadow-sm animate-fade-in border border-border">
+      {/* Header */}
       <div className="sticky top-0 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 p-2 md:p-3 bg-card border-b border-border rounded-t-lg">
-        <span className="text-sm md:text-base font-display font-medium text-foreground w-full md:w-auto">{getSceneName()}</span>
+        <span className="text-sm md:text-base font-display font-medium text-foreground w-full md:w-auto">{sceneName}</span>
         <div className="flex items-center justify-between w-full md:w-auto gap-2">
+          {/* Practice mode buttons */}
           <div className="flex items-center gap-1 bg-secondary/50 rounded-xl p-1">
             <TooltipProvider delayDuration={300}>
               <Tooltip>
@@ -228,7 +137,7 @@ const ScriptDisplay = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
-                  <p>Show the complete script with all lines visible</p>
+                  <p>Visa hela manuset med alla repliker</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -243,11 +152,11 @@ const ScriptDisplay = ({
                     }`}
                   >
                     <BookCopy size={16} className="md:w-[18px] md:h-[18px]" />
-                    <span className="hidden md:inline">Cues</span>
+                    <span className="hidden md:inline">Stickord</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
-                  <p>Shows your lines and the lines that come right before yours (your cues), helping you learn when to speak</p>
+                  <p>Visa dina repliker och stickorden innan</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -262,15 +171,17 @@ const ScriptDisplay = ({
                     }`}
                   >
                     <BookText size={16} className="md:w-[18px] md:h-[18px]" />
-                    <span className="hidden md:inline">Lines</span>
+                    <span className="hidden md:inline">Repliker</span>
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[200px]">
-                  <p>Shows only your character's lines, perfect for memorization practice</p>
+                  <p>Visa bara dina egna repliker</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
+          
+          {/* Controls */}
           <div className="flex items-center gap-2 md:gap-3">
             <TooltipProvider>
               <Tooltip>
@@ -288,12 +199,12 @@ const ScriptDisplay = ({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Adjust contrast for better visibility</p>
+                  <p>Justera kontrast</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <button
-              onClick={handlePlayPause}
+              onClick={togglePlayback}
               className="p-2 md:p-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition-opacity touch-manipulation"
             >
               {isPlaying ? <Pause size={18} className="md:w-4 md:h-4" /> : <Play size={18} className="md:w-4 md:h-4" />}
@@ -302,8 +213,9 @@ const ScriptDisplay = ({
         </div>
       </div>
 
+      {/* Character buttons */}
       <div className="p-2 md:p-1.5 flex flex-wrap gap-1.5 md:gap-1 border-b border-border bg-secondary/30">
-        {getActiveCharacters().map((char) => (
+        {activeCharacters.map((char) => (
           <button
             key={char.name}
             onClick={() => onSelectCharacter(char.name)}
@@ -318,9 +230,10 @@ const ScriptDisplay = ({
         ))}
       </div>
 
+      {/* Script lines */}
       <div className="space-y-2 p-3 md:p-3 max-h-[calc(100vh-14rem)] md:max-h-[calc(100vh-10rem)] overflow-y-auto bg-card/50">
         {lines.map((line, index) => {
-          const isCurrentLine = visibleLinesRef.current.indexOf(line) === currentLineIndex;
+          const isCurrentLine = visibleLines.indexOf(line) === currentLineIndex;
           
           return (
             <div

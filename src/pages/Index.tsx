@@ -1,201 +1,41 @@
+// VIEW LAYER: Main page component
 
 import React, { useState } from 'react';
 import ScriptDisplay from '@/components/ScriptDisplay';
-import { parseScript } from '@/utils/scriptParser';
-import { validateScript, ValidationResult } from '@/utils/scriptValidator';
 import { ScriptValidationDialog } from '@/components/ScriptValidationDialog';
 import { ScriptConverterDialog } from '@/components/ScriptConverterDialog';
 import { MiniScriptDemo } from '@/components/MiniScriptDemo';
-import type { Character, ScriptLine, ParsedScript } from '@/types/script';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Upload, ClipboardPaste, Sparkles, HelpCircle, FileText, UserCircle, Play } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-
-const sampleScripts = [
-  {
-    title: "Pippi på cirkus",
-    description: "Pippi visar sina konster",
-    content: `SCEN 1
-Pippi: Hej Tommy och Annika! Ska vi gå på cirkus idag?
-Tommy: Ja! Jag älskar cirkus!
-Annika: Men har vi pengar till biljetter?
-Pippi: Pengar? Jag har en hel väska full!
-(Pippi tar fram en stor väska med guldpengar)
-Tommy: Oj! Var kommer alla de ifrån?
-Pippi: Min pappa är kung på en sydhavsö!
-
-SCEN 2
-Cirkusdirektören: Damer och herrar! Välkomna till cirkus!
-Pippi: Vad spännande!
-(En lindansare går ut på linan)
-Annika: Åh, hon är så duktig!
-Pippi: Det där kan väl jag också!
-Tommy: Pippi, nej! Du kan inte bara...
-(Pippi klättrar upp och går på linan)
-Cirkusdirektören: Vem är det barnet?!
-
-SCEN 3
-Pippi: Titta på mig! Jag kan dansa på linan!
-(Publiken jublar)
-Stark Man: Finns det någon som vågar brottas med mig?
-Pippi: Jag! Jag är ganska stark!
-Tommy: Pippi är världens starkaste!
-(Pippi lyfter upp den starke mannen)
-Annika: Hon vann! Hon vann!
-Alla: (tillsammans) Hurra för Pippi!`
-  },
-  {
-    title: "Emil i snickarboa",
-    description: "Emil har gjort bus igen",
-    content: `SCEN 1
-Lansen: EMIL! Kom hit genast!
-Emil: Ja, pappa?
-(Emil kommer in med oskyldigt ansikte)
-Lansen: Vem har släppt ut alla grisar?
-Emil: Det var inte meningen...
-Alma: Stackars lansen, nu blir du alldeles röd i ansiktet!
-Alfred: Jag tyckte det var lite roligt faktiskt.
-Ida: Emil gör alltid bus!
-
-SCEN 2
-Lansen: Nu får du sitta i snickarboa!
-Emil: Men pappa! Jag ville bara hjälpa grisarna!
-(Emil går in i snickarboden)
-Alfred: Jag smyger dit med lite mat sen, Emil.
-Emil: Tack Alfred! Du är min bästa vän!
-(Dörren stängs)
-Lina: Den pojken! Han är hopplös!
-
-SCEN 3
-(Emil sitter och snider gubbar)
-Emil: Nu gör jag den hundrafemtionde gubben!
-(Ida tittar in genom fönstret)
-Ida: Hej Emil! Får jag se?
-Emil: Titta! Den här ser ut som pappa när han är arg!
-Ida: Ha ha! Den är precis lik!
-Emil: Imorgon ska jag vara snäll. Kanske.
-Ida: Det säger du alltid!
-Emil: Men nu menar jag det! Nästan.`
-  },
-  {
-    title: "Ronja och Birk",
-    description: "Ett möte i skogen",
-    content: `SCEN 1
-Ronja: Vem är du? Vad gör du i min skog?
-Birk: Din skog? Det är min skog!
-(De stirrar argt på varandra)
-Ronja: Jag är Ronja Rövardotter! Mattis är min far!
-Birk: Och jag är Birk Borkason! Vi är fiender!
-Ronja: Fiender? Varför då?
-Birk: Det har vi alltid varit!
-
-SCEN 2
-(Ronja ramlar ner i en grop)
-Ronja: Hjälp! Jag kan inte ta mig upp!
-Birk: Ska jag hjälpa dig?
-Ronja: Ja! Snälla!
-(Birk sträcker ner sin hand)
-Birk: Här! Ta min hand!
-Ronja: Tack! Du räddade mig!
-Birk: Kanske kan vi vara vänner istället?
-
-SCEN 3
-Ronja: Vi ses vid bäcken imorgon?
-Birk: Ja! Men säg inte till våra fäder!
-(De skakar hand)
-Ronja: Det blir vår hemlighet.
-Birk: Vänner i hemlighet!
-Ronja: Jag tycker faktiskt att du är ganska snäll.
-Birk: Du med! För att vara en Mattisdotter!
-Båda: (skrattar) Ses imorgon!`
-  },
-  {
-    title: "Tre Vänner",
-    description: "Tre vänner bygger en koja",
-    content: `SCEN 1
-Lisa: Ska vi bygga en koja idag?
-Erik: Ja! Jag har idéer!
-Sara: Var ska vi bygga den?
-Lisa: Under det stora trädet!
-(Alla springer till trädet)
-
-SCEN 2
-Erik: Jag hittar grenar!
-Sara: Jag samlar löv!
-Lisa: Jag gör dörren!
-(De arbetar tillsammans)
-Erik: Titta hur fin den blir!
-Sara: Vi är bra på att bygga!
-
-SCEN 3
-Lisa: Nu är kojan klar!
-Erik: Ska vi gå in?
-Sara: Ja! Det är mysigt här!
-(Alla sitter i kojan)
-Lisa: Det här är vår hemliga plats!
-Erik: Vår bästa koja någonsin!
-Sara: Vänner för alltid!
-Alla: (tillsammans) Hurra!`
-  },
-  {
-    title: "Skogspicknick",
-    description: "En magisk picknick i skogen",
-    content: `SCEN 1
-Kanin: Hej alla! Ska vi ha picknick idag?
-Ekorre: Ja! Jag tar med nötter!
-(Djuren samlas på ängen)
-Igelkott: Jag har ett stort äpple!
-Fågel: Jag sjunger en glad sång!
-(Fågeln börjar sjunga)
-
-SCEN 2
-Räv: Får jag vara med?
-Kanin: Ja! Du är välkommen!
-Ekorre: Vi delar allt med varandra.
-(Alla sätter sig i en ring)
-Igelkott: Det här är den bästa dagen!
-Fågel: (sjunger) La la la!
-
-SCEN 3
-Kanin: Titta! Det regnar!
-Räv: Kom! Vi springer till trädet!
-(Alla springer till det stora trädet)
-Ekorre: Vi är torra här!
-Igelkott: Vi kan fortsätta vår picknick här!
-Fågel: Regnet är som musik!
-
-SCEN 4
-Kanin: Regnet har slutat! Titta på regnbågen!
-Alla: (tillsammans) Så vacker!
-Räv: Tack för en fin dag!
-Ekorre: Vi är de bästa vännerna!
-Igelkott: Ses vi imorgon?
-Fågel: Ja! Adjö, vänner!
-Alla: (tillsammans) Adjö!`
-  }
-];
+import { useScript } from '@/hooks/useScript';
+import { sampleScripts } from '@/data/sampleScripts';
 
 const Index = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  // View state
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [practiceMode, setPracticeMode] = useState<'full' | 'cues' | 'lines'>('full');
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [lines, setLines] = useState<ScriptLine[]>([]);
-  const [scenes, setScenes] = useState<string[]>([]);
-  const [hasScript, setHasScript] = useState(false);
   const [scriptText, setScriptText] = useState('');
   const [validationDialogOpen, setValidationDialogOpen] = useState(false);
-  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
-  const [pendingScriptText, setPendingScriptText] = useState<string>('');
   const [converterDialogOpen, setConverterDialogOpen] = useState(false);
-  const [parsedScript, setParsedScript] = useState<ParsedScript | null>(null);
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
+  // Model (hook)
+  const {
+    characters,
+    lines,
+    scenes,
+    parsedScript,
+    hasScript,
+    validationResult,
+    loadScript,
+    loadSampleScript,
+    confirmScript,
+    cancelValidation,
+    resetScript,
+  } = useScript();
 
   const handleCharacterSelect = (character: string) => {
     setSelectedCharacter(character === selectedCharacter ? null : character);
@@ -206,14 +46,9 @@ const Index = () => {
   };
 
   const handleSampleScript = (script: typeof sampleScripts[0]) => {
-    const parsed = parseScript(script.content);
-    setCharacters(parsed.characters);
-    setLines(parsed.lines);
-    setScenes(parsed.scenes);
-    setParsedScript(parsed);
+    loadSampleScript(script);
     setCurrentScene(null);
     setSelectedCharacter(null);
-    setHasScript(true);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,11 +58,7 @@ const Index = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
-      
-      // Validate the script first
-      const validation = validateScript(text);
-      setValidationResult(validation);
-      setPendingScriptText(text);
+      loadScript(text);
       setValidationDialogOpen(true);
     };
     reader.readAsText(file);
@@ -235,46 +66,32 @@ const Index = () => {
 
   const handleScriptPaste = () => {
     if (!scriptText.trim()) return;
-    
-    // Validate the script first
-    const validation = validateScript(scriptText);
-    setValidationResult(validation);
-    setPendingScriptText(scriptText);
+    loadScript(scriptText);
     setValidationDialogOpen(true);
   };
 
   const handleValidationContinue = () => {
-    // Parse the pending script
-    const parsed = parseScript(pendingScriptText);
-    setCharacters(parsed.characters);
-    setLines(parsed.lines);
-    setScenes(parsed.scenes);
-    setParsedScript(parsed);
+    confirmScript();
     setCurrentScene(null);
     setSelectedCharacter(null);
-    setHasScript(true);
     setScriptText('');
     setValidationDialogOpen(false);
-    setPendingScriptText('');
   };
 
   const handleValidationCancel = () => {
+    cancelValidation();
     setValidationDialogOpen(false);
-    setPendingScriptText('');
-    setValidationResult(null);
   };
 
   const handleGoBack = () => {
-    setHasScript(false);
+    resetScript();
     setCurrentScene(null);
     setSelectedCharacter(null);
-    setCharacters([]);
-    setLines([]);
-    setScenes([]);
   };
 
   const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
 
+  // Landing page (no script loaded)
   if (!hasScript) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
@@ -285,8 +102,11 @@ const Index = () => {
           <p className="text-base md:text-lg text-muted-foreground px-2">
             Din kompis för att öva repliker!
           </p>
+          
+          {/* Action buttons */}
           <div className="flex flex-col items-center gap-6 w-full">
             <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full max-w-md md:max-w-none">
+              {/* Instructions */}
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
@@ -335,6 +155,7 @@ Pippi: Vi går på cirkus!`}
                 </SheetContent>
               </Sheet>
 
+              {/* Upload */}
               <label className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
                 <Upload size={24} className="text-muted-foreground flex-shrink-0" />
                 <div className="flex flex-col items-start md:items-center">
@@ -349,6 +170,7 @@ Pippi: Vi går på cirkus!`}
                 />
               </label>
               
+              {/* Paste */}
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="flex flex-row md:flex-col items-center justify-center gap-3 md:gap-2 px-4 md:px-6 py-4 bg-card border-2 border-dashed border-border rounded-lg hover:border-primary/40 hover:bg-accent/50 transition-all cursor-pointer w-full md:w-auto">
@@ -381,7 +203,7 @@ Pippi: Vi går på cirkus!`}
               </Sheet>
             </div>
 
-            {/* How it works section */}
+            {/* How it works */}
             <div className="w-full max-w-2xl">
               <h2 className="text-base md:text-lg font-display font-semibold text-foreground text-center mb-6">
                 Så här funkar det
@@ -410,13 +232,12 @@ Pippi: Vi går på cirkus!`}
                 </div>
               </div>
               
-              {/* Mini demo */}
               <div className="mt-6">
                 <MiniScriptDemo />
               </div>
             </div>
 
-            {/* Sample scripts section */}
+            {/* Sample scripts */}
             <div className="w-full max-w-4xl">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Sparkles size={20} className="text-gold" />
@@ -437,26 +258,62 @@ Pippi: Vi går på cirkus!`}
             </div>
           </div>
         </div>
-        
+
         {/* Footer */}
-        <footer className="mt-auto py-6 text-center">
-          <p className="text-xs text-muted-foreground/60">
-            Skapad av{' '}
-            <a href="https://www.froste.eu" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-              Magnus Froste
-            </a>
-            {' '}·{' '}
-            <a href="https://github.com/magnusfroste" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-              Öppen källkod
-            </a>
-          </p>
+        <footer className="mt-12 pt-6 border-t border-border/50 w-full max-w-2xl">
+          <div className="flex flex-col items-center gap-2 text-xs text-muted-foreground">
+            <p>
+              Skapad av{' '}
+              <a 
+                href="https://www.froste.eu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Magnus Froste
+              </a>
+            </p>
+            <p>
+              <a 
+                href="https://github.com/magnusfroste" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Öppen källkod på GitHub
+              </a>
+            </p>
+          </div>
         </footer>
+
+        {/* Dialogs */}
+        <ScriptValidationDialog
+          open={validationDialogOpen}
+          onOpenChange={setValidationDialogOpen}
+          validationResult={validationResult}
+          onContinue={handleValidationContinue}
+          onCancel={handleValidationCancel}
+        />
+
+        <ScriptConverterDialog
+          open={converterDialogOpen}
+          onOpenChange={setConverterDialogOpen}
+          parsedScript={parsedScript}
+        />
       </div>
     );
   }
 
+  // Script practice view
   return (
     <SidebarProvider>
+      <AppSidebar
+        scenes={scenes}
+        currentScene={currentScene}
+        onSceneChange={setCurrentScene}
+        onGoBack={handleGoBack}
+        onConvert={() => setConverterDialogOpen(true)}
+      />
       <div className="min-h-screen flex flex-col w-full">
         <header className="sticky top-0 z-10 flex items-center h-14 px-4 border-b border-border bg-card">
           <SidebarTrigger className="mr-4" />
@@ -464,37 +321,20 @@ Pippi: Vi går på cirkus!`}
         </header>
         
         <div className="flex flex-1">
-          <AppSidebar
-            scenes={scenes}
-            currentScene={currentScene}
-            onSceneChange={setCurrentScene}
-            onGoBack={handleGoBack}
-            onConvert={() => setConverterDialogOpen(true)}
-          />
-          <main className="flex-1 bg-background">
-            <div className="h-full max-w-5xl mx-auto px-3 md:px-4 py-3 md:py-4">
-              <ScriptDisplay
-                currentScene={currentScene ?? "all"}
-                characters={characters}
-                lines={filteredLines}
-                isPlaying={isPlaying}
-                onPlayPause={handlePlayPause}
-                selectedCharacter={selectedCharacter}
-                onSelectCharacter={handleCharacterSelect}
-                practiceMode={practiceMode}
-                onPracticeModeChange={handlePracticeModeChange}
-              />
-            </div>
+          <main className="flex-1 p-4 md:p-6">
+            <ScriptDisplay
+              currentScene={currentScene || 'all'}
+              characters={characters}
+              lines={filteredLines}
+              selectedCharacter={selectedCharacter}
+              onSelectCharacter={handleCharacterSelect}
+              practiceMode={practiceMode}
+              onPracticeModeChange={handlePracticeModeChange}
+            />
           </main>
         </div>
       </div>
-      <ScriptValidationDialog
-        open={validationDialogOpen}
-        onOpenChange={setValidationDialogOpen}
-        validationResult={validationResult}
-        onContinue={handleValidationContinue}
-        onCancel={handleValidationCancel}
-      />
+
       <ScriptConverterDialog
         open={converterDialogOpen}
         onOpenChange={setConverterDialogOpen}

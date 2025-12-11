@@ -1,13 +1,7 @@
+// VIEW LAYER: Mini script demo component
+
 import React, { useState } from 'react';
-
-const demoLines = [
-  { character: 'Pippi', text: 'Ska vi gå på cirkus idag?' },
-  { character: 'Tommy', text: 'Ja! Jag älskar cirkus!' },
-  { character: 'Annika', text: 'Men har vi pengar?' },
-  { character: 'Pippi', text: 'Jag har en hel väska full!' },
-];
-
-const characters = ['Pippi', 'Tommy', 'Annika'];
+import { demoLines, demoCharacters } from '@/data/demoContent';
 
 export const MiniScriptDemo = () => {
   const [selectedChar, setSelectedChar] = useState<string | null>('Pippi');
@@ -18,9 +12,8 @@ export const MiniScriptDemo = () => {
         Klicka på en roll för att se hur dina repliker markeras
       </p>
       
-      {/* Character buttons */}
       <div className="flex justify-center gap-2 mb-4">
-        {characters.map((char) => (
+        {demoCharacters.map((char) => (
           <button
             key={char}
             onClick={() => setSelectedChar(selectedChar === char ? null : char)}
@@ -35,7 +28,6 @@ export const MiniScriptDemo = () => {
         ))}
       </div>
 
-      {/* Demo script lines */}
       <div className="bg-card/80 border border-border rounded-lg p-3 space-y-2">
         {demoLines.map((line, index) => {
           const isSelected = selectedChar === line.character;
