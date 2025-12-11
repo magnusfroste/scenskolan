@@ -9,7 +9,8 @@ import { useLocalStorage } from './useLocalStorage';
 import { 
   getSharedScriptFromUrl, 
   clearScriptFromUrl, 
-  generateShareUrl 
+  generateShareUrl,
+  SharedScriptData
 } from '@/utils/scriptSharing';
 
 interface SavedScriptData {
@@ -27,6 +28,9 @@ interface UseScriptReturn {
   scriptTitle: string | null;
   scriptContent: string | null;
   
+  // Shared script state
+  pendingSharedScript: SharedScriptData | null;
+  
   // Validation state
   validationResult: ValidationResult | null;
   pendingScriptText: string;
@@ -34,6 +38,8 @@ interface UseScriptReturn {
   // Actions
   loadScript: (text: string) => ValidationResult;
   loadSampleScript: (sample: SampleScript) => void;
+  loadSharedScript: () => void;
+  dismissSharedScript: () => void;
   confirmScript: () => void;
   cancelValidation: () => void;
   resetScript: () => void;
@@ -50,6 +56,7 @@ export const useScript = (): UseScriptReturn => {
   const [scriptContent, setScriptContent] = useState<string | null>(null);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [pendingScriptText, setPendingScriptText] = useState('');
+  const [pendingSharedScript, setPendingSharedScript] = useState<SharedScriptData | null>(null);
 
   // Persist script to localStorage
   const [savedScript, setSavedScript, clearSavedScript] = useLocalStorage<SavedScriptData | null>(
@@ -70,12 +77,12 @@ export const useScript = (): UseScriptReturn => {
     setSavedScript({ content, title });
   }, [setSavedScript]);
 
-  // Check for shared script in URL on mount (priority over localStorage)
+  // Check for shared script in URL on mount
   useEffect(() => {
     const sharedScript = getSharedScriptFromUrl();
     if (sharedScript) {
-      const parsed = parseScript(sharedScript.content);
-      applyParsedScript(parsed, sharedScript.content, sharedScript.title);
+      // Store as pending, don't auto-load
+      setPendingSharedScript(sharedScript);
       clearScriptFromUrl();
       return;
     }
@@ -92,6 +99,17 @@ export const useScript = (): UseScriptReturn => {
       setScriptContent(savedScript.content);
     }
   }, []); // Only run on mount
+
+  const loadSharedScript = useCallback(() => {
+    if (!pendingSharedScript) return;
+    const parsed = parseScript(pendingSharedScript.content);
+    applyParsedScript(parsed, pendingSharedScript.content, pendingSharedScript.title);
+    setPendingSharedScript(null);
+  }, [pendingSharedScript, applyParsedScript]);
+
+  const dismissSharedScript = useCallback(() => {
+    setPendingSharedScript(null);
+  }, []);
 
   const loadScript = useCallback((text: string): ValidationResult => {
     const validation = validateScript(text);
@@ -143,10 +161,13 @@ export const useScript = (): UseScriptReturn => {
     hasScript,
     scriptTitle,
     scriptContent,
+    pendingSharedScript,
     validationResult,
     pendingScriptText,
     loadScript,
     loadSampleScript,
+    loadSharedScript,
+    dismissSharedScript,
     confirmScript,
     cancelValidation,
     resetScript,
