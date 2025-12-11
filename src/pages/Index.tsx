@@ -41,8 +41,11 @@ const Index = () => {
     hasScript,
     scriptTitle,
     validationResult,
+    pendingSharedScript,
     loadScript,
     loadSampleScript,
+    loadSharedScript,
+    dismissSharedScript,
     confirmScript,
     cancelValidation,
     resetScript,
@@ -117,6 +120,44 @@ const Index = () => {
   };
 
   const filteredLines = currentScene ? lines.filter(line => line.scene === currentScene) : lines;
+
+  // Shared script welcome screen
+  if (pendingSharedScript) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
+        <div className="text-center max-w-md mx-auto space-y-6 w-full">
+          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+            <Share2 size={40} className="text-primary" />
+          </div>
+          
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">Någon har delat ett manus med dig</p>
+            <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground">
+              {pendingSharedScript.title}
+            </h1>
+          </div>
+
+          <div className="flex flex-col gap-3 pt-4">
+            <Button 
+              size="lg" 
+              onClick={loadSharedScript}
+              className="w-full gap-2"
+            >
+              <Play size={20} />
+              Börja öva
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={dismissSharedScript}
+              className="w-full"
+            >
+              Avbryt
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Landing page (no script loaded)
   if (!hasScript) {
