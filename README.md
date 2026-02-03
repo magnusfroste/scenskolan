@@ -1,69 +1,60 @@
-# Welcome to your Lovable project
+# Scenskolan 🏫
 
-## Project info
+A theater school management app for practicing scripts and character dialogues. Perfect for drama students and actors to practice their lines and improve their performance!
 
-**URL**: https://lovable.dev/projects/d2a3c461-fbb1-4e4d-93d0-1fc55793677b
+**Published on [skolappar.com](https://www.skolappar.com) - Democratizing learning apps, built by vibe-coding parents who love helping their kids learn!**
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Script Display**: View and practice scripts side by side
+- **Character Selection**: Choose which character you're practicing
+- **Scene Management**: Navigate between different scenes
+- **Practice Mode**: Practice lines with feedback
+- **Script Validation**: Check your accuracy
+- **Sample Scripts**: Load example scripts to get started
+- **Responsive Design**: Works on desktop and mobile
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d2a3c461-fbb1-4e4d-93d0-1fc55793677b) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js (v18 or higher)
+- npm or yarn
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```bash
+npm install
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Run Locally
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Build for Production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm run build
+```
 
-**Use GitHub Codespaces**
+## How to Use
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Load a script or use a sample script
+2. Select your character and scene
+3. Practice your lines in practice mode
+4. Get feedback on your accuracy
+5. Improve your performance over time
 
-## What technologies are used for this project?
+## Tech Stack
 
-This project is built with .
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **shadcn/ui** - Components
+- **Tailwind CSS** - Styling
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## License
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d2a3c461-fbb1-4e4d-93d0-1fc55793677b) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+MIT
