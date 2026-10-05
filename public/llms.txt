@@ -1,0 +1,12 @@
+# Scenskolan
+
+> Övningsapp för unga skådespelare – träna in dina repliker scen för scen.
+
+Scenskolan hjälper barn och unga i teater och drama att lära sig sina repliker. Välj manus och vilken roll du spelar, gå igenom scenerna och öva dina repliker medan appen visar motspelarnas text. Du kan kontrollera hur exakt du kan dina repliker och komma igång med exempelmanus.
+
+Appen är gratis, fungerar i mobilen och på datorn, och är en del av Skolappar – pedagogiska appar byggda av föräldrar.
+
+## Länkar
+
+- [Scenskolan](https://scenskolan.skolappar.com/)
+- [Skolappar – fler pedagogiska appar](https://www.skolappar.com)
