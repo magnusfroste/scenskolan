@@ -6,6 +6,8 @@ före dem eller med hela manuset.
 
 **Spela:** https://scenskolan.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
+![Scenskolan](public/kort.png)
+
 Började som ett Lovable-projekt och körs nu fristående.
 
 ## Vad du kan göra
