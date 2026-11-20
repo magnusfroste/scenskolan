@@ -1,25 +1,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   server: {
     host: "::",
     port: 8080,
   },
   plugins: [
     react(),
-    mode === 'development' && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
-        name: 'Stage Stars',
-        short_name: 'Stage Stars',
-        description: 'Your magical script buddy! Turn your lines into dazzling performances and become the star of the show.',
+        name: 'Scenskolan',
+        short_name: 'Scenskolan',
+        description: 'En kompis för unga skådespelare som ska lära sig sina repliker.',
         theme_color: '#8B5CF6',
         background_color: '#ffffff',
         display: 'standalone',
@@ -59,7 +57,7 @@ export default defineConfig(({ mode }) => ({
         ]
       }
     })
-  ].filter(Boolean),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
