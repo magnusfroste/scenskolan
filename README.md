@@ -8,7 +8,7 @@ före dem eller med hela manuset.
 
 ![Scenskolan](public/kort.png)
 
-Började som ett Lovable-projekt och körs nu fristående.
+Körs fristående.
 
 ## Vad du kan göra
 
