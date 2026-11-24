@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ScriptLine } from '@/types/script';
+import { report } from '@/lib/skolappar';
 
 interface UseScriptPlaybackProps {
   lines: ScriptLine[];
@@ -75,6 +76,9 @@ export const useScriptPlayback = ({
 
         speechSynthesisRef.current?.speak(utterance);
       }
+    } else if (isPlaying && currentLineIndex > 0 && currentLineIndex === visibleLinesRef.current.length) {
+      // The read-through reached the last line.
+      report('round_done');
     }
 
     return () => {
@@ -96,6 +100,7 @@ export const useScriptPlayback = ({
     } else {
       setCurrentLineIndex(0);
       setIsPlaying(true);
+      report('round_start');
     }
   }, [isPlaying]);
 
