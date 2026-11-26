@@ -4,7 +4,7 @@ Scenskolan är en kompis för unga skådespelare som ska lära sig sina repliker
 eller klistra in ett manus, välj din roll och öva med bara dina repliker, med stickorden
 före dem eller med hela manuset.
 
-**Spela:** https://scenskolan.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
+**Spela:** https://scenskolan.skolappar.org · En del av [Skolappar](https://www.skolappar.org) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
 ![Scenskolan](public/kort.png)
 

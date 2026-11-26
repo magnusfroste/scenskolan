@@ -8,5 +8,5 @@ Appen är gratis, fungerar i mobilen och på datorn, och är en del av Skolappar
 
 ## Länkar
 
-- [Scenskolan](https://scenskolan.skolappar.com/)
-- [Skolappar – fler pedagogiska appar](https://www.skolappar.com)
+- [Scenskolan](https://scenskolan.skolappar.org/)
+- [Skolappar – fler pedagogiska appar](https://www.skolappar.org)
