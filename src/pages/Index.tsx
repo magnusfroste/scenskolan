@@ -351,6 +351,9 @@ Pippi: Vi går på cirkus!`}
                 Öppen källkod på GitHub
               </a>
             </p>
+            <p className="text-center leading-relaxed opacity-70">
+              Replikerna läses med OmniVoice. Voice: OmniVoice (k2-fsa, CC BY-NC). Built with Higgs Materials licensed from Boson AI USA, Inc., Copyright Boson AI USA, Inc., All Rights Reserved and Meta Llama 3 licensed under the Meta Llama 3 Community License, Copyright Meta Platforms, Inc., All Rights Reserved.
+            </p>
           </div>
         </footer>
 
